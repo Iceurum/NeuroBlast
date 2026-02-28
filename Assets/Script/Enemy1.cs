@@ -1,14 +1,13 @@
 using UnityEngine;
 
-public class Enemy1 : MonoBehaviour
+public class Enemy1 : EnemyBase
 {
-    public int maxHealth = 100;
-    private int currentHealth;
-
+    [Header("Movement")]
     public float moveSpeed = 3f;
     public float amplitude = 1.5f;
     public float frequency = 2f;
 
+    [Header("Shooting")]
     public GameObject projectilePrefab;
     public float shootInterval = 2f;
     public float projectileSpeed = 6f;
@@ -19,9 +18,9 @@ public class Enemy1 : MonoBehaviour
 
     private Vector2 moveDirection = Vector2.left;
 
-    void Start()
+    protected override void Start()
     {
-        currentHealth = maxHealth;
+        base.Start();
         startY = transform.position.y;
         randomOffset = Random.Range(0f, 10f);
         shootTimer = shootInterval;
@@ -43,7 +42,6 @@ public class Enemy1 : MonoBehaviour
     void Shoot()
     {
         shootTimer -= Time.deltaTime;
-
         if (shootTimer <= 0f)
         {
             FireProjectile();
@@ -61,32 +59,10 @@ public class Enemy1 : MonoBehaviour
             Quaternion.identity
         );
 
-        Projectile projectile = proj.GetComponent<Projectile>();
+        EnemyProjectile projectile = proj.GetComponent<EnemyProjectile>();
         if (projectile != null)
         {
             projectile.Launch(moveDirection, projectileSpeed);
         }
     }
-
-    public void TakeDamage(int damage)
-    {
-        currentHealth -= damage;
-        if (currentHealth <= 0)
-            Destroy(gameObject);
-    }
-
-    private void OnBecameInvisible()
-    {
-        Destroy(gameObject);
-    }
-    
-    //void OnTriggerEnter2D(Collider2D other)
-		//{
-			// player = other.gameObject.GetComponent<>();
-
-			//if (player != null)
-			//{
-				//player.ChangeHealth(-10);
-			//}
-	//	}
 }
