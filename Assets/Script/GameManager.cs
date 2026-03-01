@@ -22,9 +22,19 @@ public class GameManager : MonoBehaviour
     private float timer;
     private GameState currentState;
 
-    [Header("Global Counter")]
+    [Header("Level Settings")]
+    public int currentLevelIndex = 1;
+    public int maxLevel = 3;
+
+    [Header("Enemy Counter (Global)")]
     public int totalEnemyDestroyed;
     public int totalEnemyEscaped;
+
+    [Header("Enemy Counter (Per Level)")]
+    public int levelEnemyDestroyed;
+    public int levelEnemyEscaped;
+
+    // ===================== LIFECYCLE =====================
 
     void Awake()
     {
@@ -39,11 +49,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-        currentState = GameState.MainMenu;
-    }
-
     void Update()
     {
         if (currentState == GameState.Intro ||
@@ -56,32 +61,46 @@ public class GameManager : MonoBehaviour
         switch (currentState)
         {
             case GameState.Intro:
-                if (timer <= 0) StartPlaying();
+                if (timer <= 0f) StartPlaying();
                 break;
 
             case GameState.Playing:
-                if (timer <= 0) StartOutro();
+                if (timer <= 0f) StartOutro();
                 break;
 
             case GameState.Outro:
-                if (timer <= 0) FinishStage();
+                if (timer <= 0f) FinishStage();
                 break;
         }
     }
 
-    // ===== FLOW CONTROL =====
+    // ===================== GAME FLOW =====================
 
     public void StartGame()
     {
+        currentLevelIndex = 1;
+
         totalEnemyDestroyed = 0;
         totalEnemyEscaped = 0;
 
-        SceneManager.LoadScene("Level1");
+        LoadLevel(currentLevelIndex);
+    }
+
+    void LoadLevel(int levelIndex)
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.LoadScene("Level" + levelIndex);
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
         StartIntro();
     }
 
     void StartIntro()
     {
+        ResetLevelCounter();
         currentState = GameState.Intro;
         timer = introDuration;
     }
@@ -101,20 +120,43 @@ public class GameManager : MonoBehaviour
     void FinishStage()
     {
         currentState = GameState.Finished;
-        Debug.Log("Stage Finished");
+
+        Debug.Log($"Level {currentLevelIndex} finished");
+        Debug.Log($"Destroyed: {levelEnemyDestroyed}, Escaped: {levelEnemyEscaped}");
+
+        if (currentLevelIndex < maxLevel)
+        {
+            currentLevelIndex++;
+            LoadLevel(currentLevelIndex);
+        }
+        else
+        {
+            Debug.Log("GAME COMPLETED");
+            // Load Result / Credit scene di sini
+        }
     }
 
-    // ===== COUNTER =====
+    // ===================== COUNTER =====================
+
+    void ResetLevelCounter()
+    {
+        levelEnemyDestroyed = 0;
+        levelEnemyEscaped = 0;
+    }
 
     public void AddEnemyDestroyed()
     {
         totalEnemyDestroyed++;
+        levelEnemyDestroyed++;
     }
 
     public void AddEnemyEscaped()
     {
         totalEnemyEscaped++;
+        levelEnemyEscaped++;
     }
+
+    // ===================== ACCESSOR =====================
 
     public GameState CurrentState => currentState;
 }

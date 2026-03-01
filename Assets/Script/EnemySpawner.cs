@@ -29,6 +29,9 @@ public class EnemySpawner : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance.CurrentState != GameState.Playing)
+            return;
+
         stageTimer -= Time.deltaTime;
 
         float elapsed = stageDuration - stageTimer;
