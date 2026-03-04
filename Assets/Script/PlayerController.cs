@@ -51,8 +51,10 @@ public class PlayerController : MonoBehaviour
             moveDirection.Set(moveInput.x, moveInput.y);
             moveDirection.Normalize();
         }
-
-        HandleShoot();
+        if (ShootAction.WasPerformedThisFrame())
+            {
+                HandleShoot();
+            }
         HandleRegen();
     }
 
@@ -64,22 +66,18 @@ public class PlayerController : MonoBehaviour
     }
 
     void HandleShoot()
+{
+    if (ShootAction.WasPressedThisFrame())
     {
-        if (ShootAction.WasPressedThisFrame())
-        {
-            Vector2 shootDirection = lastMoveDirection;
+        if (moveDirection == Vector2.zero)
+            return;
 
-            GameObject projectile = Instantiate(
-                projectilePrefab,
-                transform.position,
-                Quaternion.identity
-            );
+        GameObject projectileObject = Instantiate(projectilePrefab, rb.position + Vector2.up * 0.5f, Quaternion.identity);
 
-           // projectile.GetComponent<Projectile>()
-           //     .Launch(shootDirection, 500f, bulletDamage);
-
-        }
+        Projectile projectile = projectileObject.GetComponent<Projectile>();
+        projectile.Launch(moveDirection, 15f, bulletDamage);
     }
+}
 
     void ClampPosition()
 {
