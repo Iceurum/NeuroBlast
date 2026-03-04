@@ -14,6 +14,10 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    [Header("Player")]
+    public GameObject playerPrefab;
+    private PlayerController currentPlayer;
+
     [Header("Stage Timing")]
     public float introDuration = 5f;
     public float stageDuration = 100f;
@@ -95,6 +99,8 @@ public class GameManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+
+        SpawnPlayer();     // 🔥 Spawn otomatis tiap load level
         StartIntro();
     }
 
@@ -132,8 +138,31 @@ public class GameManager : MonoBehaviour
         else
         {
             Debug.Log("GAME COMPLETED");
-            // Load Result / Credit scene di sini
         }
+    }
+
+    // ===================== PLAYER SPAWN =====================
+
+    void SpawnPlayer()
+    {
+        Transform spawnPoint = GameObject.FindWithTag("PlayerSpawn")?.transform;
+
+        if (spawnPoint == null)
+        {
+            Debug.LogError("No PlayerSpawn found in scene!");
+            return;
+        }
+
+        GameObject playerObj = Instantiate(playerPrefab, spawnPoint.position, Quaternion.identity);
+        currentPlayer = playerObj.GetComponent<PlayerController>();
+    }
+
+    public void PlayerDied()
+    {
+        Debug.Log("Game Over");
+        currentState = GameState.Finished;
+
+        // Bisa tambahkan load game over scene di sini
     }
 
     // ===================== COUNTER =====================

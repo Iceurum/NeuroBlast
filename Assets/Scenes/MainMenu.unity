@@ -163,6 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a66ab3f1f705f944bb249135adc9bd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  playerPrefab: {fileID: 9204242079428172520, guid: 18e94a7f6a437f14f9bcaf324441f541, type: 3}
   introDuration: 5
   stageDuration: 100
   outroDuration: 5
