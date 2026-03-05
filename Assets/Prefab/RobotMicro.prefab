@@ -165,14 +165,14 @@ MonoBehaviour:
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: ea1e1bd7-914d-49f4-9307-fa8c91ae6cae
+      m_Id: abd274a0-f16c-4640-aa02-bb8423555e53
       m_Path: <Keyboard>/space
       m_Interactions: 
       m_Processors: 
       m_Groups: 
       m_Action: Shoot
       m_Flags: 0
-    m_Flags: 1
+    m_Flags: 0
   projectilePrefab: {fileID: 4997369334512646653, guid: 42e5ed5df4f5c2447a6b17e673f836b2, type: 3}
   bulletDamage: 25
   maxHealth: 100
@@ -189,7 +189,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9204242079428172520}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0

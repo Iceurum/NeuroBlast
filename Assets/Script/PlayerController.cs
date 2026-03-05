@@ -42,22 +42,40 @@ public class PlayerController : MonoBehaviour
         currentHealth = maxHealth;
     }
 
-    private void Update()
-    {
-        moveInput = MoveAction.ReadValue<Vector2>();
+    //private void Update()
+    //{
+    //    moveInput = MoveAction.ReadValue<Vector2>();
+    //     Debug.Log("ShootAction active: " + ShootAction.enabled);
+    //    Debug.Log("WasPerformedThisFrame: " + ShootAction.WasPerformedThisFrame());
 
-        if (!Mathf.Approximately(moveInput.x, 0.0f) || !Mathf.Approximately(moveInput.y, 0.0f))
-        {
-            moveDirection.Set(moveInput.x, moveInput.y);
-            moveDirection.Normalize();
-        }
-        if (ShootAction.WasPerformedThisFrame())
-            {
-                HandleShoot();
-            }
-        HandleRegen();
+     //   if (!Mathf.Approximately(moveInput.x, 0.0f) || !Mathf.Approximately(moveInput.y, 0.0f))
+     //   {
+     //       moveDirection.Set(moveInput.x, moveInput.y);
+     //       moveDirection.Normalize();
+      //  }
+      //  if (ShootAction.WasPerformedThisFrame())
+      //      {
+      //           Debug.Log("HandleShoot() dipanggil!");
+       //         HandleShoot();
+        //    }
+       // HandleRegen();
+    //}
+
+    // pastikan ini sudah ada di atas
+
+private void Update()
+{
+    moveInput = MoveAction.ReadValue<Vector2>();
+
+    // Gunakan Keyboard.current dari New Input System
+    if (Keyboard.current.spaceKey.wasPressedThisFrame)
+    {
+        Debug.Log("SPACE - HandleShoot dipanggil!");
+        HandleShoot();
     }
 
+    HandleRegen();
+}
     private void FixedUpdate()
     {
         Vector2 position = rb.position + moveInput * speed * Time.fixedDeltaTime;
@@ -67,20 +85,39 @@ public class PlayerController : MonoBehaviour
 
     void HandleShoot()
 {
-    if (ShootAction.WasPressedThisFrame())
+    Debug.Log("HandleShoot dipanggil!");
+    Debug.Log("projectilePrefab: " + projectilePrefab);
+    
+    Vector2 shootDirection = Vector2.right;
+
+    if (projectilePrefab == null)
     {
-        if (moveDirection == Vector2.zero)
-            return;
-
-        GameObject projectileObject = Instantiate(projectilePrefab, rb.position + Vector2.up * 0.5f, Quaternion.identity);
-
-        Projectile projectile = projectileObject.GetComponent<Projectile>();
-        projectile.Launch(moveDirection, 15f, bulletDamage);
+        Debug.LogError("projectilePrefab KOSONG! Assign di Inspector!");
+        return;
     }
+
+    GameObject projectileObject = Instantiate(
+        projectilePrefab,
+        rb.position + Vector2.up * 0.5f,
+        Quaternion.identity
+    );
+
+    Debug.Log("Projectile spawned: " + projectileObject.name);
+
+    Projectile projectile = projectileObject.GetComponent<Projectile>();
+    
+    if (projectile == null)
+    {
+        Debug.LogError("Komponen Projectile tidak ada di prefab!");
+        return;
+    }
+
+    projectile.Launch(shootDirection, 15f, bulletDamage, GetComponent<Collider2D>());
+    Debug.Log("Launch dipanggil dengan arah: " + shootDirection);
 }
 
     void ClampPosition()
-{
+    {
     if (maxX > minX && maxY > minY)
     {
         Vector3 pos = transform.position;
@@ -90,7 +127,7 @@ public class PlayerController : MonoBehaviour
 
         transform.position = pos;
     }
-}
+    }
 
     void HandleRegen()
     {
