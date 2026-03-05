@@ -1,30 +1,117 @@
 using UnityEngine;
 
-public class EnemyBase : MonoBehaviour
+public abstract class EnemyBase : MonoBehaviour
 {
-    public int maxHealth = 100;
-    protected int currentHealth;
+    [Header("Stats")]
+    public int maxHP = 50;
+    public int contactDamage = 10;
+    protected int currentHP;
+
+    [Header("Movement")]
+    public float moveSpeed = 2f;
+
+    [Header("Item Drop")]
+    public GameObject itemDropPrefab;
+    [Range(0f, 1f)]
+    public float dropChance = 0.3f;
+
+    [Header("Boundary")]
+    public float leftBoundary = -12f;
+
+    protected bool isDead = false;
+
+    // ===================== LIFECYCLE =====================
 
     protected virtual void Start()
     {
-        currentHealth = maxHealth;
+        currentHP = maxHP;
     }
 
-    public void TakeDamage(int damage)
+    protected virtual void Update()
     {
-        currentHealth -= damage;
-
-        if (currentHealth <= 0)
-            Die(true);
+        HandleMovement();
+        CheckOutOfBounds();
     }
 
-    public virtual void Die(bool killedByPlayer)
+    // ===================== ABSTRACT =====================
+
+    protected abstract void HandleMovement();
+
+    // ===================== COMBAT =====================
+
+    public virtual void TakeDamage(int amount)
     {
-        if (killedByPlayer)
-            GameManager.Instance.AddEnemyDestroyed();
-        else
-            GameManager.Instance.AddEnemyEscaped();
+        if (isDead) return;
+
+        currentHP -= amount;
+        currentHP = Mathf.Clamp(currentHP, 0, maxHP);
+
+        if (currentHP <= 0)
+            Die();
+    }
+
+    protected virtual void Die()
+    {
+        if (isDead) return;
+        isDead = true;
+
+        TryDropItem();
+        GameManager.Instance.AddEnemyDestroyed();
 
         Destroy(gameObject);
     }
+
+    protected virtual void OnEscaped()
+    {
+        GameManager.Instance.AddEnemyEscaped();
+
+        // Breach Meter: tambahkan di sini nanti
+        // GameManager.Instance.AddBreachMeter(breachValue);
+
+        Destroy(gameObject);
+    }
+
+    // ===================== COLLISION =====================
+
+    protected virtual void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            PlayerController player = other.GetComponent<PlayerController>();
+            if (player != null)
+                player.TakeDamage(contactDamage);
+        }
+
+        // Fix: tag sesuai yang sudah disepakati
+        if (other.CompareTag("PlayerBullet"))
+        {
+            Projectile projectile = other.GetComponent<Projectile>();
+            if (projectile != null)
+                TakeDamage(projectile.GetDamage());
+        }
+    }
+
+    // ===================== BOUNDARY =====================
+
+    protected virtual void CheckOutOfBounds()
+    {
+        if (transform.position.x < leftBoundary)
+            OnEscaped();
+    }
+
+    // ===================== ITEM DROP =====================
+
+    // Protected supaya subclass (VolatileCharger) bisa memanggil langsung
+    protected void TryDropItem()
+    {
+        if (itemDropPrefab == null) return;
+
+        if (Random.value <= dropChance)
+            Instantiate(itemDropPrefab, transform.position, Quaternion.identity);
+    }
+
+    // ===================== ACCESSOR =====================
+
+    public int GetCurrentHP() => currentHP;
+    public bool IsDead() => isDead;
 }

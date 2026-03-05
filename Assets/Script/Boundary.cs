@@ -8,7 +8,7 @@ public class EnemyBoundary : MonoBehaviour
 
     if (enemy != null)
     {
-        enemy.Die(false);
+      //  enemy.Die(false);
     }
 }
 }

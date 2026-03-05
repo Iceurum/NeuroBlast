@@ -112,7 +112,7 @@ private void Update()
         return;
     }
 
-    projectile.Launch(shootDirection, 15f, bulletDamage, GetComponent<Collider2D>());
+    projectile.Launch(shootDirection, 15f, bulletDamage);
     Debug.Log("Launch dipanggil dengan arah: " + shootDirection);
 }
 

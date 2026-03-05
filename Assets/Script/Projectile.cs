@@ -14,42 +14,54 @@ public class Projectile : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    public void Launch(Vector2 dir, float projectileSpeed, int bulletDamage, Collider2D playerCollider)
-{
-    direction = dir.normalized;
-    speed = projectileSpeed;
-    damage = bulletDamage;
+    public void Launch(Vector2 dir, float projectileSpeed, int bulletDamage)
+    {
+        direction = dir.normalized;
+        speed = projectileSpeed;
+        damage = bulletDamage;
 
-    rb.linearVelocity = direction * speed;
+        rb.linearVelocity = direction * speed;
 
-    // Ignore collision tanpa perlu FindObjectOfType
-    Collider2D bulletCollider = GetComponent<Collider2D>();
-    if (playerCollider != null && bulletCollider != null)
-        Physics2D.IgnoreCollision(bulletCollider, playerCollider);
-
-    Destroy(gameObject, lifeTime);
-}
+        Destroy(gameObject, lifeTime);
+    }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        // Jangan destroy jika mengenai player
-        if (other.GetComponent<PlayerController>() != null)
-            return;
-
-        if (other.CompareTag("Enemy"))
+        // Bullet player mengenai enemy
+        if (CompareTag("PlayerBullet") && other.CompareTag("Enemy"))
         {
-            // other.GetComponent<Enemy>().TakeDamage(damage);
+            other.GetComponent<EnemyBase>()?.TakeDamage(damage);
+            Destroy(gameObject);
+            return;
         }
 
-        Destroy(gameObject);
+        // Bullet enemy mengenai player
+        if (CompareTag("EnemyBullet") && other.CompareTag("Player"))
+        {
+            other.GetComponent<PlayerController>()?.TakeDamage(damage);
+            Destroy(gameObject);
+            return;
+        }
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        // Jangan destroy jika mengenai player
-        if (collision.gameObject.GetComponent<PlayerController>() != null)
+        // Bullet player mengenai enemy
+        if (CompareTag("PlayerBullet") && collision.gameObject.CompareTag("Enemy"))
+        {
+            collision.gameObject.GetComponent<EnemyBase>()?.TakeDamage(damage);
+            Destroy(gameObject);
             return;
+        }
 
-        Destroy(gameObject);
+        // Bullet enemy mengenai player
+        if (CompareTag("EnemyBullet") && collision.gameObject.CompareTag("Player"))
+        {
+            collision.gameObject.GetComponent<PlayerController>()?.TakeDamage(damage);
+            Destroy(gameObject);
+            return;
+        }
     }
+
+    public int GetDamage() => damage;
 }

@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 4687456953850493913}
   - component: {fileID: -3359679823575909212}
   - component: {fileID: 8928463584545176949}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: RobotMicro
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
