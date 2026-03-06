@@ -4,7 +4,7 @@ using System.Collections;
 public class EnemySpawner : MonoBehaviour
 {
     [Header("Wave Configs (index = level - 1)")]
-    public WaveConfigSO[] levelConfigs;         // slot 0 = Level1, slot 1 = Level2, dst
+    public WaveConfigSO[] levelConfigs;
 
     [Header("Spawn Area (Right Edge)")]
     public float spawnX = 12f;
@@ -17,13 +17,10 @@ public class EnemySpawner : MonoBehaviour
 
     private WaveConfigSO activeConfig;
 
-    // ===================== LIFECYCLE =====================
-
     void Start()
     {
-        // Ambil level saat ini dari GameManager
         int levelIndex = GameManager.Instance != null
-            ? GameManager.Instance.currentLevelIndex - 1  // convert 1-based ke 0-based
+            ? GameManager.Instance.currentLevelIndex - 1
             : 0;
 
         if (levelConfigs == null || levelConfigs.Length == 0)
@@ -32,7 +29,6 @@ public class EnemySpawner : MonoBehaviour
             return;
         }
 
-        // Clamp supaya tidak out of range
         levelIndex = Mathf.Clamp(levelIndex, 0, levelConfigs.Length - 1);
         activeConfig = levelConfigs[levelIndex];
 
@@ -45,8 +41,6 @@ public class EnemySpawner : MonoBehaviour
         Debug.Log($"EnemySpawner: Memuat {activeConfig.levelName}");
         StartCoroutine(RunWaves());
     }
-
-    // ===================== WAVE RUNNER =====================
 
     IEnumerator RunWaves()
     {
@@ -69,10 +63,12 @@ public class EnemySpawner : MonoBehaviour
             yield return new WaitForSeconds(wave.delayAfterWave);
         }
 
-        Debug.Log($"[{activeConfig.levelName}] Semua wave selesai!");
-    }
+        Debug.Log($"[{activeConfig.levelName}] Semua wave selesai! Menunggu timer level...");
 
-    // ===================== SPAWN GROUP =====================
+        // Kasih tahu GameManager semua wave sudah selesai
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnAllWavesCompleted();
+    }
 
     IEnumerator SpawnGroup(EnemySpawnEntry entry)
     {
@@ -90,8 +86,6 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
-    // ===================== SPAWN POSITION =====================
-
     Vector2 GetSpawnPosition(EnemySpawnEntry entry)
     {
         if (entry.spawnOrigin == SpawnOrigin.FixedPoint && entry.spawnPoint != null)
@@ -100,8 +94,6 @@ public class EnemySpawner : MonoBehaviour
         float randomY = Random.Range(spawnMinY, spawnMaxY);
         return new Vector2(spawnX, randomY);
     }
-
-    // ===================== PUBLIC =====================
 
     public void StopSpawner()
     {

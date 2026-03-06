@@ -10,6 +10,9 @@ public abstract class EnemyBase : MonoBehaviour
     [Header("Movement")]
     public float moveSpeed = 2f;
 
+    [Header("Breach")]
+    public int breachValue = 5;             // nilai yang ditambahkan ke Breach Meter jika lolos
+
     [Header("Item Drop")]
     public GameObject itemDropPrefab;
     [Range(0f, 1f)]
@@ -56,18 +59,33 @@ public abstract class EnemyBase : MonoBehaviour
         isDead = true;
 
         TryDropItem();
-        GameManager.Instance.AddEnemyDestroyed();
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.AddEnemyDestroyed();
+        else
+            Debug.LogWarning("GameManager.Instance null!");
 
         Destroy(gameObject);
     }
 
     protected virtual void OnEscaped()
     {
-        GameManager.Instance.AddEnemyEscaped();
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.AddBreachMeter(breachValue);
+            GameManager.Instance.AddEnemyEscaped();
+        }
+        else
+            Debug.LogWarning("GameManager.Instance null!");
 
-        // Breach Meter: tambahkan di sini nanti
-        // GameManager.Instance.AddBreachMeter(breachValue);
+        Destroy(gameObject);
+    }
 
+    // Dipanggil oleh Boundary — destroy tanpa trigger Die() atau OnEscaped()
+    // karena Boundary sudah handle sendiri
+    public void ForceDestroy()
+    {
+        isDead = true;
         Destroy(gameObject);
     }
 
@@ -82,7 +100,6 @@ public abstract class EnemyBase : MonoBehaviour
                 player.TakeDamage(contactDamage);
         }
 
-        // Fix: tag sesuai yang sudah disepakati
         if (other.CompareTag("PlayerBullet"))
         {
             Projectile projectile = other.GetComponent<Projectile>();
@@ -101,7 +118,6 @@ public abstract class EnemyBase : MonoBehaviour
 
     // ===================== ITEM DROP =====================
 
-    // Protected supaya subclass (VolatileCharger) bisa memanggil langsung
     protected void TryDropItem()
     {
         if (itemDropPrefab == null) return;

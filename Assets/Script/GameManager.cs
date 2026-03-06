@@ -10,6 +10,13 @@ public enum GameState
     Finished
 }
 
+public enum EndingType
+{
+    None,
+    PerfectClear,       // Breach Meter = 0
+    PartialSuccess,     // Breach Meter 1 - breachLimit     
+}
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -20,7 +27,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Stage Timing")]
     public float introDuration = 5f;
-    public float stageDuration = 100f;
+    public float stageDuration = 120f;
     public float outroDuration = 5f;
 
     private float timer;
@@ -28,7 +35,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Level Settings")]
     public int currentLevelIndex = 1;
-    public int maxLevel = 3;
+    public int maxLevel = 4;
 
     [Header("Enemy Counter (Global)")]
     public int totalEnemyDestroyed;
@@ -38,7 +45,11 @@ public class GameManager : MonoBehaviour
     public int levelEnemyDestroyed;
     public int levelEnemyEscaped;
 
-    // ===================== LIFECYCLE =====================
+    [Header("Wave Status")]
+    public bool allWavesCompleted = false;
+
+    [Header("Breach Meter")]
+    public int breachMeter = 0;             // nilai breach meter saat ini       
 
     void Awake()
     {
@@ -78,14 +89,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // ===================== GAME FLOW =====================
-
     public void StartGame()
     {
         currentLevelIndex = 1;
-
         totalEnemyDestroyed = 0;
         totalEnemyEscaped = 0;
+        breachMeter = 0;
 
         LoadLevel(currentLevelIndex);
     }
@@ -100,13 +109,14 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
 
-        SpawnPlayer();     // 🔥 Spawn otomatis tiap load level
+        SpawnPlayer();
         StartIntro();
     }
 
     void StartIntro()
     {
         ResetLevelCounter();
+        allWavesCompleted = false;
         currentState = GameState.Intro;
         timer = introDuration;
     }
@@ -129,6 +139,7 @@ public class GameManager : MonoBehaviour
 
         Debug.Log($"Level {currentLevelIndex} finished");
         Debug.Log($"Destroyed: {levelEnemyDestroyed}, Escaped: {levelEnemyEscaped}");
+        Debug.Log($"Breach Meter: {breachMeter}");
 
         if (currentLevelIndex < maxLevel)
         {
@@ -137,11 +148,49 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("GAME COMPLETED");
+            // Semua level selesai — tentukan ending
+            TriggerEnding();
         }
     }
 
-    // ===================== PLAYER SPAWN =====================
+    void TriggerEnding()
+    {
+        EndingType ending = GetEndingType();
+
+        Debug.Log($"GAME COMPLETED - Ending: {ending} | Breach Meter: {breachMeter}");
+
+        switch (ending)
+        {
+            case EndingType.PerfectClear:
+                SceneManager.LoadScene("Ending_PerfectClear");
+                break;
+
+            case EndingType.PartialSuccess:
+                SceneManager.LoadScene("Ending_PartialSuccess");
+                break;
+
+        }
+    }
+
+    public EndingType GetEndingType()
+    {
+        if (breachMeter == 0)
+            return EndingType.PerfectClear;
+        else
+            return EndingType.PartialSuccess;
+    }
+
+    public void AddBreachMeter(int value)
+    {
+        breachMeter += value;
+        Debug.Log($"Breach Meter: {breachMeter}");
+    }
+
+    public void OnAllWavesCompleted()
+    {
+        allWavesCompleted = true;
+        Debug.Log($"Level {currentLevelIndex} - Semua wave selesai! Menunggu timer...");
+    }
 
     void SpawnPlayer()
     {
@@ -159,13 +208,10 @@ public class GameManager : MonoBehaviour
 
     public void PlayerDied()
     {
-        Debug.Log("Game Over");
+        Debug.Log("Game Over - Player Died");
         currentState = GameState.Finished;
-
-        // Bisa tambahkan load game over scene di sini
+        SceneManager.LoadScene("Ending_GameOver");
     }
-
-    // ===================== COUNTER =====================
 
     void ResetLevelCounter()
     {
@@ -185,7 +231,7 @@ public class GameManager : MonoBehaviour
         levelEnemyEscaped++;
     }
 
-    // ===================== ACCESSOR =====================
-
     public GameState CurrentState => currentState;
+    public float GetTimer() => timer;
+    public int GetBreachMeter() => breachMeter;
 }

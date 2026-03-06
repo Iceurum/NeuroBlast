@@ -26,23 +26,23 @@ public class Projectile : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D other)
-    {
-        // Bullet player mengenai enemy
-        if (CompareTag("PlayerBullet") && other.CompareTag("Enemy"))
-        {
-            other.GetComponent<EnemyBase>()?.TakeDamage(damage);
-            Destroy(gameObject);
-            return;
-        }
+{
+    Debug.Log($"Bullet tag: {tag} | Kena: {other.gameObject.name} tag: {other.tag}");
 
-        // Bullet enemy mengenai player
-        if (CompareTag("EnemyBullet") && other.CompareTag("Player"))
-        {
-            other.GetComponent<PlayerController>()?.TakeDamage(damage);
-            Destroy(gameObject);
-            return;
-        }
+    if (CompareTag("PlayerBullet") && other.CompareTag("Enemy"))
+    {
+        other.GetComponent<EnemyBase>()?.TakeDamage(damage);
+        Destroy(gameObject);
+        return;
     }
+
+    if (CompareTag("EnemyBullet") && other.CompareTag("Player"))
+    {
+        other.GetComponent<PlayerController>()?.TakeDamage(damage);
+        Destroy(gameObject);
+        return;
+    }
+}
 
     void OnCollisionEnter2D(Collision2D collision)
     {

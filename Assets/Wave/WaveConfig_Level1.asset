@@ -13,4 +13,49 @@ MonoBehaviour:
   m_Name: WaveConfig_Level1
   m_EditorClassIdentifier: Assembly-CSharp::WaveConfigSO
   levelName: Level 1
-  waves: []
+  waves:
+  - waveName: Wave 1
+    enemies:
+    - enemyPrefab: {fileID: 7367508184144569144, guid: 41ffd377ffe22bf4087634f97b7dc517, type: 3}
+      count: 3
+      delayBetweenSpawns: 1
+      spawnOrigin: 0
+      spawnPoint: {fileID: 0}
+    delayBeforeWave: 3
+    delayAfterWave: 8
+  - waveName: Wave 2
+    enemies:
+    - enemyPrefab: {fileID: 7367508184144569144, guid: 41ffd377ffe22bf4087634f97b7dc517, type: 3}
+      count: 3
+      delayBetweenSpawns: 0.8
+      spawnOrigin: 0
+      spawnPoint: {fileID: 0}
+    delayBeforeWave: 5
+    delayAfterWave: 8
+  - waveName: Wave 3
+    enemies:
+    - enemyPrefab: {fileID: 7367508184144569144, guid: 41ffd377ffe22bf4087634f97b7dc517, type: 3}
+      count: 4
+      delayBetweenSpawns: 0.6
+      spawnOrigin: 0
+      spawnPoint: {fileID: 0}
+    delayBeforeWave: 5
+    delayAfterWave: 7
+  - waveName: Wave 4
+    enemies:
+    - enemyPrefab: {fileID: 7367508184144569144, guid: 41ffd377ffe22bf4087634f97b7dc517, type: 3}
+      count: 5
+      delayBetweenSpawns: 0.5
+      spawnOrigin: 0
+      spawnPoint: {fileID: 0}
+    delayBeforeWave: 5
+    delayAfterWave: 6
+  - waveName: Wave 5
+    enemies:
+    - enemyPrefab: {fileID: 7367508184144569144, guid: 41ffd377ffe22bf4087634f97b7dc517, type: 3}
+      count: 6
+      delayBetweenSpawns: 0.4
+      spawnOrigin: 0
+      spawnPoint: {fileID: 0}
+    delayBeforeWave: 4
+    delayAfterWave: 5
