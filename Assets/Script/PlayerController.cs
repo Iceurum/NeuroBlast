@@ -1,16 +1,16 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
     public InputAction MoveAction;
     public float speed = 6f;
-    Vector2 moveDirection = new Vector2(1, 0);
+    private Vector2 moveDirection = new Vector2(1, 0);
+    private Vector2 moveInput;
 
     [Header("Combat")]
-    public InputAction ShootAction;
     public GameObject projectilePrefab;
     public int bulletDamage = 25;
 
@@ -25,108 +25,144 @@ public class PlayerController : MonoBehaviour
     public float minY;
     public float maxY;
 
+    [Header("Intro/Outro")]
+    public float introSpeed = 20f;
+    public float outroSpeed = 20f;
+
     private Rigidbody2D rb;
+    private bool inputEnabled = false;
+    private bool isOutro = false;
 
-
-    private Vector2 moveInput;
-    private Vector2 lastMoveDirection = Vector2.right;
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        rb.gravityScale = 0f;
+    }
 
     private void Start()
     {
         MoveAction.Enable();
-        ShootAction.Enable();
-
-        rb = GetComponent<Rigidbody2D>();
-
-        rb.gravityScale = 0f; // penting untuk free movement
         currentHealth = maxHealth;
+        inputEnabled = false;
     }
 
-    //private void Update()
-    //{
-    //    moveInput = MoveAction.ReadValue<Vector2>();
-    //     Debug.Log("ShootAction active: " + ShootAction.enabled);
-    //    Debug.Log("WasPerformedThisFrame: " + ShootAction.WasPerformedThisFrame());
-
-     //   if (!Mathf.Approximately(moveInput.x, 0.0f) || !Mathf.Approximately(moveInput.y, 0.0f))
-     //   {
-     //       moveDirection.Set(moveInput.x, moveInput.y);
-     //       moveDirection.Normalize();
-      //  }
-      //  if (ShootAction.WasPerformedThisFrame())
-      //      {
-      //           Debug.Log("HandleShoot() dipanggil!");
-       //         HandleShoot();
-        //    }
-       // HandleRegen();
-    //}
-
-    // pastikan ini sudah ada di atas
-
-private void Update()
-{
-    moveInput = MoveAction.ReadValue<Vector2>();
-
-    // Gunakan Keyboard.current dari New Input System
-    if (Keyboard.current.spaceKey.wasPressedThisFrame)
+    private void Update()
     {
-        Debug.Log("SPACE - HandleShoot dipanggil!");
-        HandleShoot();
+        if (!inputEnabled) return;
+
+        moveInput = MoveAction.ReadValue<Vector2>();
+
+        if (!Mathf.Approximately(moveInput.x, 0.0f) || !Mathf.Approximately(moveInput.y, 0.0f))
+        {
+            moveDirection.Set(moveInput.x, moveInput.y);
+            moveDirection.Normalize();
+        }
+
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+            HandleShoot();
+
+        HandleRegen();
     }
 
-    HandleRegen();
-}
     private void FixedUpdate()
     {
+        if (!inputEnabled || isOutro) return;
+
         Vector2 position = rb.position + moveInput * speed * Time.fixedDeltaTime;
         rb.MovePosition(position);
         ClampPosition();
     }
 
+    public IEnumerator PlayIntroAnimation(Vector2 spawnTarget)
+    {
+        Debug.Log("PlayIntroAnimation START - target: " + spawnTarget);
+
+        // Mulai dari offscreen kiri
+        transform.position = new Vector2(spawnTarget.x - 15f, spawnTarget.y);
+
+        while (Vector2.Distance(transform.position, spawnTarget) > 0.1f)
+        {
+            transform.position = Vector2.MoveTowards(
+                transform.position,
+                spawnTarget,
+                introSpeed * Time.deltaTime
+            );
+            yield return null;
+        }
+
+        transform.position = spawnTarget;
+        inputEnabled = true;
+        Debug.Log("PlayIntroAnimation SELESAI - input aktif!");
+    }
+
+
+    public IEnumerator PlayOutroAnimation()
+    {
+        isOutro = true;
+        inputEnabled = false;
+
+        Vector2 centerTarget = new Vector2(transform.position.x, 0f);
+        while (Vector2.Distance(transform.position, centerTarget) > 0.1f)
+        {
+            transform.position = Vector2.MoveTowards(
+                transform.position,
+                centerTarget,
+                outroSpeed * Time.deltaTime
+            );
+            yield return null;
+        }
+
+        // Maju ke kanan sampai hilang dari layar
+        Vector3 exitTarget = new Vector3(20f, 0f, 0f);
+        while (transform.position.x < exitTarget.x)
+        {
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                exitTarget,
+                outroSpeed * Time.deltaTime
+            );
+            yield return null;
+        }
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnOutroAnimationComplete();
+    }
+
     void HandleShoot()
-{
-    Debug.Log("HandleShoot dipanggil!");
-    Debug.Log("projectilePrefab: " + projectilePrefab);
-    
-    Vector2 shootDirection = Vector2.right;
-
-    if (projectilePrefab == null)
     {
-        Debug.LogError("projectilePrefab KOSONG! Assign di Inspector!");
-        return;
+        if (projectilePrefab == null)
+        {
+            Debug.LogError("projectilePrefab KOSONG! Assign di Inspector!");
+            return;
+        }
+
+        Vector2 shootDirection = Vector2.right;
+
+        GameObject projectileObject = Instantiate(
+            projectilePrefab,
+            rb.position + Vector2.up * 0.5f,
+            Quaternion.identity
+        );
+
+        Projectile projectile = projectileObject.GetComponent<Projectile>();
+        if (projectile == null)
+        {
+            Debug.LogError("Komponen Projectile tidak ada di prefab!");
+            return;
+        }
+
+        projectile.Launch(shootDirection, 15f, bulletDamage);
     }
-
-    GameObject projectileObject = Instantiate(
-        projectilePrefab,
-        rb.position + Vector2.up * 0.5f,
-        Quaternion.identity
-    );
-
-    Debug.Log("Projectile spawned: " + projectileObject.name);
-
-    Projectile projectile = projectileObject.GetComponent<Projectile>();
-    
-    if (projectile == null)
-    {
-        Debug.LogError("Komponen Projectile tidak ada di prefab!");
-        return;
-    }
-
-    projectile.Launch(shootDirection, 15f, bulletDamage);
-    Debug.Log("Launch dipanggil dengan arah: " + shootDirection);
-}
 
     void ClampPosition()
     {
-    if (maxX > minX && maxY > minY)
-    {
-        Vector3 pos = transform.position;
-
-        pos.x = Mathf.Clamp(pos.x, minX, maxX);
-        pos.y = Mathf.Clamp(pos.y, minY, maxY);
-
-        transform.position = pos;
-    }
+        if (maxX > minX && maxY > minY)
+        {
+            Vector3 pos = transform.position;
+            pos.x = Mathf.Clamp(pos.x, minX, maxX);
+            pos.y = Mathf.Clamp(pos.y, minY, maxY);
+            transform.position = pos;
+        }
     }
 
     void HandleRegen()
@@ -140,9 +176,10 @@ private void Update()
 
     public void TakeDamage(int amount)
     {
+        if (!inputEnabled) return;
+
         currentHealth -= amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-
 
         if (currentHealth <= 0)
             Die();
@@ -151,8 +188,12 @@ private void Update()
     void Die()
     {
         Debug.Log("Player Dead");
-        GameManager.Instance.PlayerDied();
+        if (GameManager.Instance != null)
+            GameManager.Instance.PlayerDied();
         Destroy(gameObject);
-
     }
+
+    public int GetCurrentHealth() => currentHealth;
+    public int GetMaxHealth() => maxHealth;
+    public bool IsInputEnabled() => inputEnabled;
 }

@@ -9,7 +9,7 @@ public class MainMenuUI : MonoBehaviour
 
     public void StartGame()
     {
-        SceneManager.LoadScene("Level1");
+        GameManager.Instance.StartGame();
     }
 
     public void OpenCredit()

@@ -21,7 +21,7 @@ MonoBehaviour:
       delayBetweenSpawns: 1
       spawnOrigin: 0
       spawnPoint: {fileID: 0}
-    delayBeforeWave: 3
+    delayBeforeWave: 7
     delayAfterWave: 8
   - waveName: Wave 2
     enemies:

@@ -1,20 +1,23 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public enum GameState
 {
     MainMenu,
+    Cutscene,
     Intro,
     Playing,
     Outro,
+    BossFight,
     Finished
 }
 
 public enum EndingType
 {
     None,
-    PerfectClear,       // Breach Meter = 0
-    PartialSuccess,     // Breach Meter 1 - breachLimit     
+    PerfectClear,
+    PartialSuccess,
 }
 
 public class GameManager : MonoBehaviour
@@ -35,7 +38,8 @@ public class GameManager : MonoBehaviour
 
     [Header("Level Settings")]
     public int currentLevelIndex = 1;
-    public int maxLevel = 4;
+    public int lastLevelIndex = 1;
+    public int maxLevel = 5;               
 
     [Header("Enemy Counter (Global)")]
     public int totalEnemyDestroyed;
@@ -47,9 +51,12 @@ public class GameManager : MonoBehaviour
 
     [Header("Wave Status")]
     public bool allWavesCompleted = false;
+    public bool bossDefeated = false;
 
     [Header("Breach Meter")]
-    public int breachMeter = 0;             // nilai breach meter saat ini       
+    public int breachMeter = 0;
+
+    // ===================== LIFECYCLE =====================
 
     void Awake()
     {
@@ -67,8 +74,7 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (currentState == GameState.Intro ||
-            currentState == GameState.Playing ||
-            currentState == GameState.Outro)
+            currentState == GameState.Playing)
         {
             timer -= Time.deltaTime;
         }
@@ -80,23 +86,49 @@ public class GameManager : MonoBehaviour
                 break;
 
             case GameState.Playing:
-                if (timer <= 0f) StartOutro();
-                break;
-
-            case GameState.Outro:
-                if (timer <= 0f) FinishStage();
+                // Stage 5 tidak pakai timer untuk trigger outro
+                // Boss fight yang trigger outro via BossDefeated()
+                if (currentLevelIndex < maxLevel && timer <= 0f)
+                    StartOutro();
                 break;
         }
     }
 
+    // ===================== GAME FLOW =====================
+
     public void StartGame()
     {
         currentLevelIndex = 1;
+        lastLevelIndex = 1;
         totalEnemyDestroyed = 0;
         totalEnemyEscaped = 0;
         breachMeter = 0;
+        bossDefeated = false;
 
-        LoadLevel(currentLevelIndex);
+        // Ke Opening Cutscene dulu
+        LoadCutscene("OpeningCutscene");
+    }
+
+    void LoadCutscene(string sceneName)
+    {
+        currentState = GameState.Cutscene;
+        SceneManager.LoadScene(sceneName);
+    }
+
+    // Dipanggil dari CutsceneManager setelah cutscene selesai
+    public void OnCutsceneFinished(string cutsceneName)
+    {
+        switch (cutsceneName)
+        {
+            case "OpeningCutscene":
+                LoadLevel(currentLevelIndex);
+                break;
+
+            case "Ending_PerfectClear":
+            case "Ending_PartialSuccess":
+                SceneManager.LoadScene("MainMenu");
+                break;
+        }
     }
 
     void LoadLevel(int levelIndex)
@@ -108,17 +140,49 @@ public class GameManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
-
-        SpawnPlayer();
-        StartIntro();
+        StartCoroutine(RunLevelIntro());
     }
 
-    void StartIntro()
+    IEnumerator RunLevelIntro()
     {
+        // Tunggu 2 frame supaya semua GameObject fully initialized
+        yield return null;
+        yield return null;
+
         ResetLevelCounter();
         allWavesCompleted = false;
         currentState = GameState.Intro;
         timer = introDuration;
+
+        Debug.Log("RunLevelIntro START - Level " + currentLevelIndex);
+
+        // 1. Tampilkan level title
+        LevelIntroUI introUI = FindAnyObjectByType<LevelIntroUI>();
+        Debug.Log("LevelIntroUI found: " + (introUI != null));
+
+        if (introUI != null)
+            yield return StartCoroutine(introUI.PlayIntro("Level " + currentLevelIndex));
+
+        Debug.Log("Title intro selesai, spawn player...");
+
+        // 2. Spawn player lalu intro animation
+        SpawnPlayer();
+
+        if (currentPlayer != null)
+        {
+            Transform spawnPoint = GameObject.FindWithTag("PlayerSpawn")?.transform;
+            Debug.Log("SpawnPoint found: " + (spawnPoint != null));
+
+            if (spawnPoint != null)
+                yield return StartCoroutine(currentPlayer.PlayIntroAnimation(spawnPoint.position));
+        }
+        else
+        {
+            Debug.LogError("currentPlayer NULL setelah SpawnPlayer!");
+        }
+
+        Debug.Log("Player intro selesai, mulai gameplay!");
+        StartPlaying();
     }
 
     void StartPlaying()
@@ -130,7 +194,31 @@ public class GameManager : MonoBehaviour
     void StartOutro()
     {
         currentState = GameState.Outro;
-        timer = outroDuration;
+
+        // Stop spawner
+        EnemySpawner spawner = FindAnyObjectByType<EnemySpawner>();
+        if (spawner != null)
+            spawner.StopSpawner();
+
+        StartCoroutine(RunOutro());
+    }
+
+    IEnumerator RunOutro()
+    {
+        // Tunggu sampai semua enemy mati/lolos
+        while (FindAnyObjectByType<EnemyBase>() != null)
+            yield return new WaitForSeconds(0.5f);
+
+        // Outro animation player
+        if (currentPlayer != null)
+            yield return StartCoroutine(currentPlayer.PlayOutroAnimation());
+        else
+            OnOutroAnimationComplete();
+    }
+
+    public void OnOutroAnimationComplete()
+    {
+        FinishStage();
     }
 
     void FinishStage()
@@ -144,31 +232,42 @@ public class GameManager : MonoBehaviour
         if (currentLevelIndex < maxLevel)
         {
             currentLevelIndex++;
+            lastLevelIndex = currentLevelIndex;
             LoadLevel(currentLevelIndex);
         }
         else
         {
-            // Semua level selesai — tentukan ending
-            TriggerEnding();
+            // Stage 5 selesai → trigger ending cutscene
+            TriggerEndingCutscene();
         }
     }
 
-    void TriggerEnding()
+    // ===================== BOSS FIGHT =====================
+
+    // Dipanggil oleh BossController saat boss mati
+    public void BossDefeated()
+    {
+        bossDefeated = true;
+        Debug.Log("Boss defeated!");
+        StartOutro();
+    }
+
+    // ===================== ENDING =====================
+
+    void TriggerEndingCutscene()
     {
         EndingType ending = GetEndingType();
-
         Debug.Log($"GAME COMPLETED - Ending: {ending} | Breach Meter: {breachMeter}");
 
         switch (ending)
         {
             case EndingType.PerfectClear:
-                SceneManager.LoadScene("Ending_PerfectClear");
+                LoadCutscene("Ending_PerfectClear");
                 break;
 
             case EndingType.PartialSuccess:
-                SceneManager.LoadScene("Ending_PartialSuccess");
+                LoadCutscene("Ending_PartialSuccess");
                 break;
-
         }
     }
 
@@ -180,17 +279,67 @@ public class GameManager : MonoBehaviour
             return EndingType.PartialSuccess;
     }
 
+    // ===================== GAME OVER =====================
+
+    public void PlayerDied()
+    {
+        Debug.Log($"Game Over - Player Died at Level {currentLevelIndex}");
+        lastLevelIndex = currentLevelIndex;
+        currentState = GameState.Finished;
+        SceneManager.LoadScene("Ending_GameOver");
+    }
+
+    public void RetryFromLevel(int levelIndex)
+    {
+        currentLevelIndex = levelIndex;
+        breachMeter = 0;
+        totalEnemyDestroyed = 0;
+        totalEnemyEscaped = 0;
+        bossDefeated = false;
+
+        LoadLevel(currentLevelIndex);
+    }
+
+    public void GoToMainMenu()
+    {
+        currentLevelIndex = 1;
+        lastLevelIndex = 1;
+        breachMeter = 0;
+        totalEnemyDestroyed = 0;
+        totalEnemyEscaped = 0;
+        bossDefeated = false;
+
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    // ===================== BREACH METER =====================
+
     public void AddBreachMeter(int value)
     {
         breachMeter += value;
         Debug.Log($"Breach Meter: {breachMeter}");
     }
 
+    // ===================== WAVE STATUS =====================
+
     public void OnAllWavesCompleted()
     {
         allWavesCompleted = true;
         Debug.Log($"Level {currentLevelIndex} - Semua wave selesai! Menunggu timer...");
+
+        // Stage 5 — setelah wave selesai langsung trigger boss fight
+        if (currentLevelIndex == maxLevel)
+        {
+            Debug.Log("Stage 5 waves selesai - Boss Fight dimulai!");
+            currentState = GameState.BossFight;
+            // BossController akan di-activate dari sini atau via event
+            //BossController boss = FindAnyObjectByType<BossController>();
+            //if (boss != null)
+            //    boss.StartBossFight();
+        }
     }
+
+    // ===================== PLAYER =====================
 
     void SpawnPlayer()
     {
@@ -202,16 +351,12 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        GameObject playerObj = Instantiate(playerPrefab, spawnPoint.position, Quaternion.identity);
+        Vector2 offscreenLeft = new Vector2(spawnPoint.position.x - 15f, spawnPoint.position.y);
+        GameObject playerObj = Instantiate(playerPrefab, offscreenLeft, Quaternion.identity);
         currentPlayer = playerObj.GetComponent<PlayerController>();
     }
 
-    public void PlayerDied()
-    {
-        Debug.Log("Game Over - Player Died");
-        currentState = GameState.Finished;
-        SceneManager.LoadScene("Ending_GameOver");
-    }
+    // ===================== COUNTER =====================
 
     void ResetLevelCounter()
     {
@@ -231,7 +376,10 @@ public class GameManager : MonoBehaviour
         levelEnemyEscaped++;
     }
 
+    // ===================== ACCESSOR =====================
+
     public GameState CurrentState => currentState;
     public float GetTimer() => timer;
     public int GetBreachMeter() => breachMeter;
+    public bool IsBossFight() => currentState == GameState.BossFight;
 }

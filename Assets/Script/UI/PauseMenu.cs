@@ -5,27 +5,22 @@ using UnityEngine.InputSystem;
 public class PauseMenu : MonoBehaviour
 {
     [Header("UI")]
-    public GameObject pauseMenuPanel;       // assign Panel pause di Inspector
+    public GameObject pauseMenuPanel;       
 
     private bool isPaused = false;
 
-    // ===================== LIFECYCLE =====================
-
     void Start()
     {
-        // Pastikan pause menu tersembunyi saat mulai
+        
         if (pauseMenuPanel != null)
             pauseMenuPanel.SetActive(false);
     }
 
     void Update()
     {
-        // Trigger pause via keyboard Escape
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
             TogglePause();
     }
-
-    // ===================== PAUSE LOGIC =====================
 
     public void TogglePause()
     {
@@ -38,7 +33,6 @@ public class PauseMenu : MonoBehaviour
     public void Pause()
     {
         isPaused = true;
-        Time.timeScale = 0f;                // freeze semua gameplay
 
         if (pauseMenuPanel != null)
             pauseMenuPanel.SetActive(true);
@@ -47,13 +41,11 @@ public class PauseMenu : MonoBehaviour
     public void Resume()
     {
         isPaused = false;
-        Time.timeScale = 1f;                // resume gameplay
+        Time.timeScale = 1f;         
 
         if (pauseMenuPanel != null)
             pauseMenuPanel.SetActive(false);
     }
-
-    // ===================== BUTTON ACTIONS =====================
 
     public void OnResumeButton()
     {
@@ -62,15 +54,12 @@ public class PauseMenu : MonoBehaviour
 
     public void OnMainMenuButton()
     {
-        Time.timeScale = 1f;                // reset timeScale sebelum pindah scene
+        Time.timeScale = 1f;              
         SceneManager.LoadScene("MainMenu");
     }
 
-    // ===================== CLEANUP =====================
-
     void OnDestroy()
     {
-        // Pastikan timeScale reset kalau scene di-destroy
         Time.timeScale = 1f;
     }
 }
