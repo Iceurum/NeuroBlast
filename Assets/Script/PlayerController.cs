@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     [Header("Combat")]
     public GameObject projectilePrefab;
     public int bulletDamage = 25;
+    public Vector2 bulletSpawnOffset = new Vector2(0.5f, 0f);
 
     [Header("Health")]
     public int maxHealth = 100;
@@ -140,7 +141,7 @@ public class PlayerController : MonoBehaviour
 
         GameObject projectileObject = Instantiate(
             projectilePrefab,
-            rb.position + Vector2.up * 0.5f,
+            rb.position + bulletSpawnOffset,
             Quaternion.identity
         );
 

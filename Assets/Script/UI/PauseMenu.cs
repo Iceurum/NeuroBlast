@@ -10,11 +10,18 @@ public class PauseMenu : MonoBehaviour
     private bool isPaused = false;
 
     void Start()
-    {
-        
-        if (pauseMenuPanel != null)
-            pauseMenuPanel.SetActive(false);
-    }
+{
+    if (pauseMenuPanel != null)
+        pauseMenuPanel.SetActive(false);
+
+    Invoke(nameof(ShowPauseMenu), 3f);
+}
+
+void ShowPauseMenu()
+{
+    if (pauseMenuPanel != null)
+        pauseMenuPanel.SetActive(true);
+}
 
     void Update()
     {
