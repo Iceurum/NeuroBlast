@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
     [Header("Level Settings")]
     public int currentLevelIndex = 1;
     public int lastLevelIndex = 1;
-    public int maxLevel = 5;               
+    public int maxLevel = 3;                // ← 3 level: 1-2 biasa, 3 boss
 
     [Header("Enemy Counter (Global)")]
     public int totalEnemyDestroyed;
@@ -86,8 +86,7 @@ public class GameManager : MonoBehaviour
                 break;
 
             case GameState.Playing:
-                // Stage 5 tidak pakai timer untuk trigger outro
-                // Boss fight yang trigger outro via BossDefeated()
+                // Level 3 (boss) tidak pakai timer — boss yang trigger outro
                 if (currentLevelIndex < maxLevel && timer <= 0f)
                     StartOutro();
                 break;
@@ -105,7 +104,6 @@ public class GameManager : MonoBehaviour
         breachMeter = 0;
         bossDefeated = false;
 
-        // Ke Opening Cutscene dulu
         LoadCutscene("OpeningCutscene");
     }
 
@@ -115,7 +113,6 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
-    // Dipanggil dari CutsceneManager setelah cutscene selesai
     public void OnCutsceneFinished(string cutsceneName)
     {
         switch (cutsceneName)
@@ -145,7 +142,6 @@ public class GameManager : MonoBehaviour
 
     IEnumerator RunLevelIntro()
     {
-        // Tunggu 2 frame supaya semua GameObject fully initialized
         yield return null;
         yield return null;
 
@@ -156,16 +152,20 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("RunLevelIntro START - Level " + currentLevelIndex);
 
-        // 1. Tampilkan level title
+        // Tampilkan level title
         LevelIntroUI introUI = FindAnyObjectByType<LevelIntroUI>();
         Debug.Log("LevelIntroUI found: " + (introUI != null));
 
         if (introUI != null)
-            yield return StartCoroutine(introUI.PlayIntro("Level " + currentLevelIndex));
+        {
+            string titleText = currentLevelIndex == maxLevel
+                ? "Boss Stage"                          // Level 3 tampilkan "Boss Stage"
+                : "Level " + currentLevelIndex;
+            yield return StartCoroutine(introUI.PlayIntro(titleText));
+        }
 
         Debug.Log("Title intro selesai, spawn player...");
 
-        // 2. Spawn player lalu intro animation
         SpawnPlayer();
 
         if (currentPlayer != null)
@@ -189,13 +189,31 @@ public class GameManager : MonoBehaviour
     {
         currentState = GameState.Playing;
         timer = stageDuration;
+
+        // Level 3 → langsung trigger boss fight tanpa wave biasa
+        if (currentLevelIndex == maxLevel)
+        {
+            Debug.Log("Level 3 - Boss Fight dimulai!");
+            StartCoroutine(StartBossFightDelay());
+        }
+    }
+
+    IEnumerator StartBossFightDelay()
+    {
+        yield return new WaitForSeconds(1f);    // delay sedikit sebelum boss muncul
+        currentState = GameState.BossFight;
+
+        BossController boss = FindAnyObjectByType<BossController>();
+        if (boss != null)
+            boss.StartBossFight();
+        else
+            Debug.LogWarning("BossController tidak ditemukan di scene Level3!");
     }
 
     void StartOutro()
     {
         currentState = GameState.Outro;
 
-        // Stop spawner
         EnemySpawner spawner = FindAnyObjectByType<EnemySpawner>();
         if (spawner != null)
             spawner.StopSpawner();
@@ -205,11 +223,9 @@ public class GameManager : MonoBehaviour
 
     IEnumerator RunOutro()
     {
-        // Tunggu sampai semua enemy mati/lolos
         while (FindAnyObjectByType<EnemyBase>() != null)
             yield return new WaitForSeconds(0.5f);
 
-        // Outro animation player
         if (currentPlayer != null)
             yield return StartCoroutine(currentPlayer.PlayOutroAnimation());
         else
@@ -237,14 +253,12 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            // Stage 5 selesai → trigger ending cutscene
             TriggerEndingCutscene();
         }
     }
 
     // ===================== BOSS FIGHT =====================
 
-    // Dipanggil oleh BossController saat boss mati
     public void BossDefeated()
     {
         bossDefeated = true;
@@ -326,17 +340,6 @@ public class GameManager : MonoBehaviour
     {
         allWavesCompleted = true;
         Debug.Log($"Level {currentLevelIndex} - Semua wave selesai! Menunggu timer...");
-
-        // Stage 5 — setelah wave selesai langsung trigger boss fight
-        if (currentLevelIndex == maxLevel)
-        {
-            Debug.Log("Stage 5 waves selesai - Boss Fight dimulai!");
-            currentState = GameState.BossFight;
-            // BossController akan di-activate dari sini atau via event
-            //BossController boss = FindAnyObjectByType<BossController>();
-            //if (boss != null)
-            //    boss.StartBossFight();
-        }
     }
 
     // ===================== PLAYER =====================
