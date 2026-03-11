@@ -23,6 +23,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Ending_GameOver.unity
     guid: 1f5db83a31865b146b2f781c148d7ebc
+  - enabled: 1
+    path: Assets/Scenes/Ending_PartialSuccess.unity
+    guid: bfa58062ccea7f247b2d00bc304804f7
+  - enabled: 1
+    path: Assets/Scenes/Ending_PerfectClear.unity
+    guid: 96595b80d73c3584a9f91882acbc2a14
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
