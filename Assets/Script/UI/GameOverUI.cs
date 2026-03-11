@@ -1,29 +1,28 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Video;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using TMPro;
 
 public class GameOverUI : MonoBehaviour
 {
-    [Header("Video (Opsional)")]
-    public VideoPlayer videoPlayer;
+    [Header("Sprite Animation (8 Frame)")]
+    public Image animationImage;        
+    public Sprite[] frames;             
+    public float fps = 12f;              
+    public bool loopAnimation = true;    
 
     [Header("Buttons Panel")]
-    public CanvasGroup buttonsPanel;        // CanvasGroup untuk fade in
-    public float buttonDelay = 7f;          // delay sebelum button muncul
-    public float fadeDuration = 1f;         // durasi fade in button
+    public CanvasGroup buttonsPanel;
+    public float buttonDelay = 7f;
+    public float fadeDuration = 1f;
 
     [Header("Confirm Popup")]
     public GameObject confirmPopupPanel;
     public TextMeshProUGUI confirmText;
 
-    // ===================== LIFECYCLE =====================
-
     void Start()
     {
-        // Sembunyikan button panel dulu
         if (buttonsPanel != null)
         {
             buttonsPanel.alpha = 0f;
@@ -31,30 +30,45 @@ public class GameOverUI : MonoBehaviour
             buttonsPanel.blocksRaycasts = false;
         }
 
-        // Sembunyikan confirm popup
         if (confirmPopupPanel != null)
             confirmPopupPanel.SetActive(false);
 
-        // Set confirm text
         if (confirmText != null)
             confirmText.text = "Kembali ke Main Menu?\nSemua progres tidak disimpan\ndan kamu harus mengulang dari awal.";
 
-        // Play video kalau ada
-        if (videoPlayer != null)
-            videoPlayer.Play();
+        // Mulai animasi sprite
+        if (animationImage != null && frames != null && frames.Length > 0)
+            StartCoroutine(PlaySpriteAnimation());
 
-        // Mulai timer untuk munculkan button
         StartCoroutine(ShowButtonsAfterDelay());
     }
 
-    // ===================== SHOW BUTTONS =====================
+    IEnumerator PlaySpriteAnimation()
+    {
+        float interval = 1f / fps; // jeda antar frame
+        int currentFrame = 0;
+
+        while (true)
+        {
+            animationImage.sprite = frames[currentFrame];
+            currentFrame++;
+
+            // Kalau sudah frame terakhir
+            if (currentFrame >= frames.Length)
+            {
+                if (loopAnimation)
+                    currentFrame = 0;  // ulangi dari awal
+                else
+                    yield break;       // berhenti di frame terakhir
+            }
+
+            yield return new WaitForSeconds(interval);
+        }
+    }
 
     IEnumerator ShowButtonsAfterDelay()
     {
-        // Tunggu delay
         yield return new WaitForSeconds(buttonDelay);
-
-        // Fade in button panel
         yield return StartCoroutine(FadeInButtons());
     }
 
