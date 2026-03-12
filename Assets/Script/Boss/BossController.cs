@@ -31,6 +31,7 @@ public class BossController : MonoBehaviour
     public float homingSpeed = 3f;
     public float homingTurnSpeed = 2f;
     public float homingCooldown = 5f;
+    public float homingDelayBetween = 1f; 
 
     [Header("Charge Attack")]
     public float chargeSpeed = 20f;
@@ -168,7 +169,7 @@ public class BossController : MonoBehaviour
 
     IEnumerator HomingAttack()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(homingDelayBetween);
 
         if (isDead) yield break;
 
@@ -332,9 +333,11 @@ public class BossController : MonoBehaviour
 
         if (other.CompareTag("PlayerBullet"))
         {
-            Projectile projectile = other.GetComponent<Projectile>();
+             Projectile projectile = other.GetComponent<Projectile>();
             if (projectile != null)
                 TakeDamage(projectile.GetDamage());
+    
+            Destroy(other.gameObject); 
         }
     }
 

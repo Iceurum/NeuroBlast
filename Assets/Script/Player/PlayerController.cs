@@ -7,7 +7,6 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     public InputAction MoveAction;
     public float speed = 6f;
-    private Vector2 moveDirection = new Vector2(1, 0);
     private Vector2 moveInput;
 
     [Header("Combat")]
@@ -53,12 +52,6 @@ public class PlayerController : MonoBehaviour
 
         moveInput = MoveAction.ReadValue<Vector2>();
 
-        if (!Mathf.Approximately(moveInput.x, 0.0f) || !Mathf.Approximately(moveInput.y, 0.0f))
-        {
-            moveDirection.Set(moveInput.x, moveInput.y);
-            moveDirection.Normalize();
-        }
-
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
             HandleShoot();
 
@@ -77,17 +70,12 @@ public class PlayerController : MonoBehaviour
     public IEnumerator PlayIntroAnimation(Vector2 spawnTarget)
     {
         Debug.Log("PlayIntroAnimation START - target: " + spawnTarget);
-
-        // Mulai dari offscreen kiri
         transform.position = new Vector2(spawnTarget.x - 15f, spawnTarget.y);
 
         while (Vector2.Distance(transform.position, spawnTarget) > 0.1f)
         {
             transform.position = Vector2.MoveTowards(
-                transform.position,
-                spawnTarget,
-                introSpeed * Time.deltaTime
-            );
+                transform.position, spawnTarget, introSpeed * Time.deltaTime);
             yield return null;
         }
 
@@ -95,7 +83,6 @@ public class PlayerController : MonoBehaviour
         inputEnabled = true;
         Debug.Log("PlayIntroAnimation SELESAI - input aktif!");
     }
-
 
     public IEnumerator PlayOutroAnimation()
     {
@@ -106,22 +93,15 @@ public class PlayerController : MonoBehaviour
         while (Vector2.Distance(transform.position, centerTarget) > 0.1f)
         {
             transform.position = Vector2.MoveTowards(
-                transform.position,
-                centerTarget,
-                outroSpeed * Time.deltaTime
-            );
+                transform.position, centerTarget, outroSpeed * Time.deltaTime);
             yield return null;
         }
 
-        // Maju ke kanan sampai hilang dari layar
         Vector3 exitTarget = new Vector3(20f, 0f, 0f);
         while (transform.position.x < exitTarget.x)
         {
             transform.position = Vector3.MoveTowards(
-                transform.position,
-                exitTarget,
-                outroSpeed * Time.deltaTime
-            );
+                transform.position, exitTarget, outroSpeed * Time.deltaTime);
             yield return null;
         }
 
@@ -137,22 +117,16 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        Vector2 shootDirection = Vector2.right;
+        Vector2 spawnPos = rb.position + bulletSpawnOffset;
 
-        GameObject projectileObject = Instantiate(
-            projectilePrefab,
-            rb.position + bulletSpawnOffset,
-            Quaternion.identity
-        );
-
-        Projectile projectile = projectileObject.GetComponent<Projectile>();
-        if (projectile == null)
+        PlayerBuffSystem buffSystem = GetComponent<PlayerBuffSystem>();
+        if (buffSystem != null)
+            buffSystem.ShootWithBuff(spawnPos, bulletDamage);
+        else
         {
-            Debug.LogError("Komponen Projectile tidak ada di prefab!");
-            return;
+            GameObject obj = Instantiate(projectilePrefab, spawnPos, Quaternion.identity);
+            obj.GetComponent<Projectile>()?.Launch(Vector2.right, 15f, bulletDamage);
         }
-
-        projectile.Launch(shootDirection, 15f, bulletDamage);
     }
 
     void ClampPosition()
@@ -178,6 +152,11 @@ public class PlayerController : MonoBehaviour
     public void TakeDamage(int amount)
     {
         if (!inputEnabled) return;
+
+        // Cek shield buff
+        PlayerBuffSystem buffSystem = GetComponent<PlayerBuffSystem>();
+        if (buffSystem != null && buffSystem.AbsorbDamage())
+            return;
 
         currentHealth -= amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);

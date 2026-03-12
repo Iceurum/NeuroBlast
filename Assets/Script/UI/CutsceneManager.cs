@@ -10,7 +10,7 @@ public class CutsceneManager : MonoBehaviour
     public Image backgroundImage;           // Background gambar cutscene
     public Image fadePanel;                 // Panel untuk fade (hitam/putih)
 
-    [Header("Visual Novel Dialogue Box")]
+    [Header("Dialogue Box")]
     public GameObject dialogueBox;          // Panel kotak dialog bawah
     public TextMeshProUGUI speakerNameText; // Nama karakter (misal: "Dr. Reeves")
     public GameObject speakerNamePanel;     // Panel background nama speaker
@@ -38,7 +38,7 @@ public class CutsceneManager : MonoBehaviour
 
     private SlideData[] slideData = new SlideData[]
     {
-        new SlideData("Doctor", "Tumor ini berkembang sangat cepat… dalam 5 minggu tekanan akan fatal."),
+        new SlideData("Doctor", "Tumor ini berkembang sangat cepat… dalam 3 minggu tekanan akan fatal."),
         new SlideData("Doctor", "Operasi terlalu beresiko. Kita butuh solusi lain."),
         new SlideData("Ilmuwan",    "Kami akan mengirim unit NK-67 untuk menghancurkannya dari dalam."),
         new SlideData("Ilmuwan",    "Robot ini masih eksperimental. Namun, tidak ada cara lain."),

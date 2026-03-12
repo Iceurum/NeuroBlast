@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4687456953850493913}
   - component: {fileID: -3359679823575909212}
   - component: {fileID: 8928463584545176949}
+  - component: {fileID: -1118276449962913513}
   - component: {fileID: -5956543715060839076}
   m_Layer: 8
   m_Name: RobotMicro
@@ -232,6 +233,27 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 1.0000002, y: 2.0000005}
   m_Direction: 0
+--- !u!114 &-1118276449962913513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9204242079428172520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c74d5291d98cb224497896732720a05a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerBuffSystem
+  buffDuration: 5
+  spreadProjectilePrefab: {fileID: 4997369334512646653, guid: 42e5ed5df4f5c2447a6b17e673f836b2, type: 3}
+  spreadCount: 3
+  spreadAngle: 20
+  spreadSpeed: 15
+  laserBeamPrefab: {fileID: 2176270209145073513, guid: 947ba277f379d52489e5952b665ff616, type: 3}
+  laserOffset: {x: 3, y: 0}
+  shieldPrefab: {fileID: 6933042409707452471, guid: 5008f9b19f431d9489d5148a188d8005, type: 3}
+  currentBuff: 0
 --- !u!95 &-5956543715060839076
 Animator:
   serializedVersion: 7

@@ -5,23 +5,15 @@ using UnityEngine.InputSystem;
 public class PauseMenu : MonoBehaviour
 {
     [Header("UI")]
-    public GameObject pauseMenuPanel;       
+    public GameObject pauseMenuPanel;
 
     private bool isPaused = false;
 
     void Start()
-{
-    if (pauseMenuPanel != null)
-        pauseMenuPanel.SetActive(false);
-
-    Invoke(nameof(ShowPauseMenu), 3f);
-}
-
-void ShowPauseMenu()
-{
-    if (pauseMenuPanel != null)
-        pauseMenuPanel.SetActive(true);
-}
+    {
+        if (pauseMenuPanel != null)
+            pauseMenuPanel.SetActive(false);
+    }
 
     void Update()
     {
@@ -40,6 +32,7 @@ void ShowPauseMenu()
     public void Pause()
     {
         isPaused = true;
+        Time.timeScale = 0f;
 
         if (pauseMenuPanel != null)
             pauseMenuPanel.SetActive(true);
@@ -48,20 +41,17 @@ void ShowPauseMenu()
     public void Resume()
     {
         isPaused = false;
-        Time.timeScale = 1f;         
+        Time.timeScale = 1f;
 
         if (pauseMenuPanel != null)
             pauseMenuPanel.SetActive(false);
     }
 
-    public void OnResumeButton()
-    {
-        Resume();
-    }
+    public void OnResumeButton() => Resume();
 
     public void OnMainMenuButton()
     {
-        Time.timeScale = 1f;              
+        Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenu");
     }
 
