@@ -163,7 +163,7 @@ MonoBehaviour:
   maxHealth: 100
   regenRate: 5
   minX: -7.5
-  maxX: 8
+  maxX: 8.5
   minY: -4.6
   maxY: 4.6
   introSpeed: 5

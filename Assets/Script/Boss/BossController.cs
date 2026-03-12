@@ -36,7 +36,7 @@ public class BossController : MonoBehaviour
     public float chargeSpeed = 20f;
     public int chargeDamage = 30;
     public float chargeCooldown = 8f;
-    public float chargeWindup = 1f;         // berhenti sebentar sebelum charge
+    public float chargeWindup = 1f;        
 
     [Header("Death")]
     public GameObject explosionEffectPrefab;
@@ -52,8 +52,6 @@ public class BossController : MonoBehaviour
     private Rigidbody2D rb;
     private bool isStarted = false;
 
-    // ===================== LIFECYCLE =====================
-
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -64,7 +62,6 @@ public class BossController : MonoBehaviour
     {
         currentHP = maxHP;
         startY = battlePosition.y;
-        // Boss tetap aktif di scene tapi idle sampai StartBossFight() dipanggil
     }
 
     void Update()
@@ -74,8 +71,6 @@ public class BossController : MonoBehaviour
         if (currentState == BossState.Battle)
             HandleFloating();
     }
-
-    // ===================== INTRO =====================
 
     public void StartBossFight()
     {
@@ -110,15 +105,11 @@ public class BossController : MonoBehaviour
         StartCoroutine(AttackLoop());
     }
 
-    // ===================== FLOATING MOVEMENT =====================
-
     void HandleFloating()
     {
         float newY = startY + Mathf.Sin(Time.time * floatFrequency) * floatAmplitude;
         transform.position = new Vector2(transform.position.x, newY);
     }
-
-    // ===================== ATTACK LOOP =====================
 
     IEnumerator AttackLoop()
     {
@@ -149,8 +140,6 @@ public class BossController : MonoBehaviour
         }
     }
 
-    // ===================== ATTACK 1: SPREAD SHOT =====================
-
     IEnumerator SpreadShot()
     {
         // Berhenti sebentar (telegraph)
@@ -177,32 +166,23 @@ public class BossController : MonoBehaviour
         yield return new WaitForSeconds(spreadCooldown);
     }
 
-    // ===================== ATTACK 2: HOMING ATTACK =====================
-
     IEnumerator HomingAttack()
     {
         yield return new WaitForSeconds(0.5f);
 
         if (isDead) yield break;
 
-        // Tembak homing projectile satu per satu dengan delay
+        // Tembak homing projectile satu per satu dari posisi boss
         for (int i = 0; i < homingCount; i++)
         {
             if (isDead) yield break;
 
-            // Spawn dari posisi atas player
-            Vector2 spawnPos = player != null
-                ? new Vector2(player.transform.position.x, transform.position.y + 3f)
-                : (Vector2)transform.position;
-
-            FireHomingProjectile(spawnPos);
+            FireHomingProjectile(transform.position);
             yield return new WaitForSeconds(0.3f);
         }
 
         yield return new WaitForSeconds(homingCooldown);
     }
-
-    // ===================== ATTACK 3: CHARGE ATTACK =====================
 
     IEnumerator ChargeAttack()
     {
@@ -242,8 +222,6 @@ public class BossController : MonoBehaviour
         yield return new WaitForSeconds(chargeCooldown);
     }
 
-    // ===================== FIRE HELPERS =====================
-
     void FireProjectile(GameObject prefab, Vector2 direction, float speed, int damage)
     {
         if (prefab == null) return;
@@ -276,8 +254,6 @@ public class BossController : MonoBehaviour
         float cos = Mathf.Cos(radians);
         return new Vector2(cos * v.x - sin * v.y, sin * v.x + cos * v.y);
     }
-
-    // ===================== DAMAGE & DEATH =====================
 
     public void TakeDamage(int amount)
     {
@@ -325,7 +301,6 @@ public class BossController : MonoBehaviour
 
     IEnumerator WhiteFlash()
     {
-        // Buat panel putih menutupi layar
         GameObject flashObj = new GameObject("WhiteFlash");
         Canvas canvas = FindAnyObjectByType<Canvas>();
         if (canvas != null)
@@ -348,8 +323,6 @@ public class BossController : MonoBehaviour
         }
     }
 
-    // ===================== COLLISION =====================
-
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
@@ -364,8 +337,6 @@ public class BossController : MonoBehaviour
                 TakeDamage(projectile.GetDamage());
         }
     }
-
-    // ===================== ACCESSOR =====================
 
     public int GetCurrentHP() => currentHP;
     public int GetMaxHP() => maxHP;

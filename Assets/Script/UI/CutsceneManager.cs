@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.InputSystem;
 using TMPro;
 
 public class CutsceneManager : MonoBehaviour
@@ -37,17 +38,16 @@ public class CutsceneManager : MonoBehaviour
 
     private SlideData[] slideData = new SlideData[]
     {
-        new SlideData("Dr. Reeves", "Tumor ini berkembang sangat cepat… dalam 5 minggu tekanan akan fatal."),
-        new SlideData("Dr. Reeves", "Operasi terlalu beresiko. Kita butuh solusi lain."),
+        new SlideData("Doctor", "Tumor ini berkembang sangat cepat… dalam 5 minggu tekanan akan fatal."),
+        new SlideData("Doctor", "Operasi terlalu beresiko. Kita butuh solusi lain."),
         new SlideData("Ilmuwan",    "Kami akan mengirim unit NK-67 untuk menghancurkannya dari dalam."),
         new SlideData("Ilmuwan",    "Robot ini masih eksperimental. Namun, tidak ada cara lain."),
-        new SlideData("",           ""),   // Slide 5: tanpa dialog, fade out ke putih
+        new SlideData("",           ""),
     };
 
     private bool playerInput = false;
-    private bool typewriterDone = false;
 
-    // ===================== LIFECYCLE =====================
+
 
     void Start()
     {
@@ -58,11 +58,13 @@ public class CutsceneManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
-            playerInput = true;
+    if (Mouse.current.leftButton.wasPressedThisFrame ||
+        Keyboard.current.spaceKey.wasPressedThisFrame ||
+        Keyboard.current.enterKey.wasPressedThisFrame)
+        playerInput = true;
     }
 
-    // ===================== CUTSCENE FLOW =====================
+
 
     IEnumerator PlayCutscene()
     {
@@ -70,7 +72,6 @@ public class CutsceneManager : MonoBehaviour
         {
             backgroundImage.sprite = slides[i];
 
-            // Slide terakhir (suntikan + fade putih)
             if (i == slides.Length - 1)
             {
                 yield return StartCoroutine(Fade(1f, 0f, fadeDuration, Color.black));
@@ -139,7 +140,7 @@ public class CutsceneManager : MonoBehaviour
 
         // Typewriter
         playerInput = false;
-        typewriterDone = false;
+
 
         for (int c = 0; c < dialogue.Length; c++)
         {
@@ -147,14 +148,12 @@ public class CutsceneManager : MonoBehaviour
             if (playerInput)
             {
                 dialogueBodyText.text = dialogue;
-                typewriterDone = true;
                 playerInput = false;
                 break;
             }
             dialogueBodyText.text += dialogue[c];
             yield return new WaitForSeconds(typewriterSpeed);
         }
-        typewriterDone = true;
 
         // Tunggu input player atau auto-advance
         playerInput = false;

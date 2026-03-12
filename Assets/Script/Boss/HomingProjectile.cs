@@ -21,6 +21,10 @@ public class HomingProjectile : MonoBehaviour
         speed = projectileSpeed;
         damage = projectileDamage;
         turnSpeed = projectileTurnSpeed;
+
+        // Arah awal ke kiri (dari boss ke arah player)
+        transform.up = Vector2.left;
+
         launched = true;
     }
 
@@ -28,18 +32,16 @@ public class HomingProjectile : MonoBehaviour
     {
         if (!launched) return;
 
-        // Kejar player
+        // Perlahan rotate ke arah player
         if (target != null)
         {
             Vector2 dirToTarget = ((Vector2)target.transform.position - (Vector2)transform.position).normalized;
-            Vector2 currentDir = (Vector2)transform.up;
-
-            // Rotate perlahan ke arah player
+            Vector2 currentDir = transform.up;
             Vector2 newDir = Vector2.MoveTowards(currentDir, dirToTarget, turnSpeed * Time.deltaTime);
             transform.up = newDir;
         }
 
-        // Gerak maju
+        // Gerak maju sesuai arah transform
         transform.Translate(Vector2.up * speed * Time.deltaTime);
     }
 

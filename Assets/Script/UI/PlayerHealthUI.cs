@@ -4,65 +4,84 @@ using UnityEngine.UI;
 public class PlayerHealthUI : MonoBehaviour
 {
     [Header("UI")]
-    public Slider healthSlider;            
-    public Image fillImage;                 
+    public Slider healthSlider;
+    public Image fillImage;             // Fill Area > Fill (Image component)
+    public Image backgroundImage;       // Background image di Slider (opsional)
 
-    [Header("Color")]
-    public Color highHealthColor = Color.green;
-    public Color midHealthColor = Color.yellow;
-    public Color lowHealthColor = Color.red;
+    [Header("Fill Sprites")]
+    public Sprite fullSprite;           // full.png  — HP > 50%
+    public Sprite halfSprite;           // half.png  — HP <= 50%
+
+    [Header("Background Sprite")]
+    public Sprite barSprite;            // bar.png   — assign ke backgroundImage
 
     private PlayerController player;
+    private float lastRatio = -1f;      
 
     void Start()
-{
-    player = FindAnyObjectByType<PlayerController>();
-
-    if (healthSlider != null)
-    {
-        healthSlider.minValue = 0;
-        healthSlider.maxValue = 100;
-        healthSlider.value = 100;
-        healthSlider.gameObject.SetActive(false);
-    }
-}
-
-void Update()
-{
-    if (player == null)
     {
         player = FindAnyObjectByType<PlayerController>();
 
-        if (player != null && healthSlider != null)
+        // Pasang bar.png ke background
+        if (backgroundImage != null && barSprite != null)
+            backgroundImage.sprite = barSprite;
+
+        if (healthSlider != null)
         {
-            healthSlider.maxValue = player.GetMaxHealth();
-            healthSlider.gameObject.SetActive(true);
+            healthSlider.minValue = 0;
+            healthSlider.maxValue = 100;
+            healthSlider.value = 100;
+            healthSlider.gameObject.SetActive(false);
         }
-        return;
+        SetFillSprite(1f);
     }
 
-    UpdateHealthBar();
-}
+    void Update()
+    {
+        if (player == null)
+        {
+            player = FindAnyObjectByType<PlayerController>();
+
+            if (player != null && healthSlider != null)
+            {
+                healthSlider.maxValue = player.GetMaxHealth();
+                healthSlider.gameObject.SetActive(true);
+            }
+            return;
+        }
+
+        UpdateHealthBar();
+    }
+
     void UpdateHealthBar()
     {
         if (healthSlider == null) return;
 
         int current = player.GetCurrentHealth();
-        int max = player.GetMaxHealth();
+        int max     = player.GetMaxHealth();
 
         healthSlider.value = current;
 
+        float ratio = (float)current / max;
 
-        if (fillImage != null)
+        if (Mathf.Abs(ratio - lastRatio) > 0.001f)
         {
-            float ratio = (float)current / max;
+            SetFillSprite(ratio);
+            lastRatio = ratio;
+        }
+    }
 
-            if (ratio > 0.6f)
-                fillImage.color = highHealthColor;
-            else if (ratio > 0.3f)
-                fillImage.color = midHealthColor;
-            else
-                fillImage.color = lowHealthColor;
+    void SetFillSprite(float ratio)
+    {
+        if (fillImage == null) return;
+
+        if (ratio > 0.5f)
+        {
+            if (fullSprite != null) fillImage.sprite = fullSprite;
+        }
+        else
+        {
+            if (halfSprite != null) fillImage.sprite = halfSprite;
         }
     }
 }
