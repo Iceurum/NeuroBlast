@@ -182,7 +182,7 @@ MonoBehaviour:
   maxHP: 50
   contactDamage: 10
   moveSpeed: 2
-  breachValue: 5
+  breachValue: 1
   itemDropPrefab: {fileID: 0}
   dropChance: 0.3
   leftBoundary: -12

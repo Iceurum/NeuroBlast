@@ -179,10 +179,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38b9f526a95f0f240830fbed8a7e78a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FloatCharger
-  maxHP: 50
+  maxHP: 25
   contactDamage: 10
   moveSpeed: 2
-  breachValue: 5
+  breachValue: 1
   itemDropPrefab: {fileID: 0}
   dropChance: 0.3
   leftBoundary: -12

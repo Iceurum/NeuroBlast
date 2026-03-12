@@ -179,10 +179,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0270cbc2388593c49a09c0ae2578c925, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NeuroShooter
-  maxHP: 50
+  maxHP: 150
   contactDamage: 10
   moveSpeed: 2
-  breachValue: 5
+  breachValue: 1
   itemDropPrefab: {fileID: 0}
   dropChance: 0.3
   leftBoundary: -12
