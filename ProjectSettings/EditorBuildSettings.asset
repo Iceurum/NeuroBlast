@@ -15,22 +15,22 @@ EditorBuildSettings:
     path: Assets/Scenes/OpeningCutscene.unity
     guid: 857638292057f2d45be0cb673a04c75e
   - enabled: 1
-    path: Assets/Scenes/Level1.unity
+    path: Assets/Scenes/Level/Level1.unity
     guid: 59a9f1947337d7a4495d4474b3528c14
   - enabled: 1
-    path: Assets/Scenes/Level2.unity
+    path: Assets/Scenes/Level/Level2.unity
     guid: 3b077fcccf654f740b958510e923891a
   - enabled: 1
-    path: Assets/Scenes/LevelBoss.unity
+    path: Assets/Scenes/Level/LevelBoss.unity
     guid: 4788067b0c3c1764f8af9dd6b9efcd92
   - enabled: 1
-    path: Assets/Scenes/Ending_GameOver.unity
+    path: Assets/Scenes/End/Ending_GameOver.unity
     guid: 1f5db83a31865b146b2f781c148d7ebc
   - enabled: 1
-    path: Assets/Scenes/Ending_PartialSuccess.unity
+    path: Assets/Scenes/End/Ending_PartialSuccess.unity
     guid: bfa58062ccea7f247b2d00bc304804f7
   - enabled: 1
-    path: Assets/Scenes/Ending_PerfectClear.unity
+    path: Assets/Scenes/End/Ending_PerfectClear.unity
     guid: 96595b80d73c3584a9f91882acbc2a14
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
