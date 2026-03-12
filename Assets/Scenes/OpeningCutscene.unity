@@ -153,8 +153,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 25, y: -110.15}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 11.0532, y: -145.14175}
+  m_SizeDelta: {x: 195.8935, y: 92.0375}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &93319597
 MonoBehaviour:
@@ -242,7 +242,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -174.29855, y: 9.320778, z: -126.762726, w: -9.320793}
+  m_margin: {x: -270.11636, y: 9.320778, z: -267.75192, w: -9.320793}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -442,8 +442,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 581.2, y: 327}
+  m_AnchoredPosition: {x: 0.000030518, y: 1}
+  m_SizeDelta: {x: 838, y: 469.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &530074284
 MonoBehaviour:
@@ -517,8 +517,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.6, y: 0}
-  m_SizeDelta: {x: 578, y: 323}
+  m_AnchoredPosition: {x: -0.000022888, y: 0.99998}
+  m_SizeDelta: {x: 838, y: 469.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &721597218
 MonoBehaviour:
@@ -593,8 +593,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -153.78479, y: -63}
-  m_SizeDelta: {x: -376.5595, y: -278.6914}
+  m_AnchoredPosition: {x: -246.18057, y: -77.37274}
+  m_SizeDelta: {x: -561.351, y: -427.8934}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1131686598
 MonoBehaviour:
@@ -985,7 +985,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -1017,7 +1017,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -80.158676, w: 0}
+  m_margin: {x: -17.794727, y: 0, z: -125.32988, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
