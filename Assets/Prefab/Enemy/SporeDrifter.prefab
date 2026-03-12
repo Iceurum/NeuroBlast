@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -6774262563688806076}
   - component: {fileID: -7626179550869524627}
   - component: {fileID: -9207064593519372574}
+  - component: {fileID: 5216566931851047026}
   m_Layer: 9
   m_Name: SporeDrifter
   m_TagString: Enemy
@@ -191,3 +192,25 @@ MonoBehaviour:
   fireDelay: 0.5
   bulletDamage: 10
   bulletSpeed: 8
+--- !u!95 &5216566931851047026
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7367508184144569144}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d84d9432f3c9dd545a814f72d7a2022b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
