@@ -56,8 +56,6 @@ public class GameManager : MonoBehaviour
     [Header("Breach Meter")]
     public int breachMeter = 0;
 
-    // ===================== LIFECYCLE =====================
-
     void Awake()
     {
         if (Instance == null)
@@ -92,8 +90,6 @@ public class GameManager : MonoBehaviour
                 break;
         }
     }
-
-    // ===================== GAME FLOW =====================
 
     public void StartGame()
     {
@@ -132,6 +128,12 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
         SceneManager.LoadScene("Level" + levelIndex);
+    }
+
+    void LoadBossLevel()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.LoadScene("LevelBoss");
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -190,7 +192,6 @@ public class GameManager : MonoBehaviour
         currentState = GameState.Playing;
         timer = stageDuration;
 
-        // Level 3 → langsung trigger boss fight tanpa wave biasa
         if (currentLevelIndex == maxLevel)
         {
             Debug.Log("Level 3 - Boss Fight dimulai!");
@@ -200,7 +201,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator StartBossFightDelay()
     {
-        yield return new WaitForSeconds(1f);    // delay sedikit sebelum boss muncul
+        yield return new WaitForSeconds(1f);  
         currentState = GameState.BossFight;
 
         BossController boss = FindAnyObjectByType<BossController>();
@@ -249,7 +250,12 @@ public class GameManager : MonoBehaviour
         {
             currentLevelIndex++;
             lastLevelIndex = currentLevelIndex;
-            LoadLevel(currentLevelIndex);
+
+            // Setelah Level 2 → load LevelBoss langsung
+            if (currentLevelIndex == maxLevel)
+                LoadBossLevel();
+            else
+                LoadLevel(currentLevelIndex);
         }
         else
         {
@@ -287,7 +293,7 @@ public class GameManager : MonoBehaviour
 
     public EndingType GetEndingType()
     {
-        if (breachMeter == 0)
+        if (breachMeter < 10)
             return EndingType.PerfectClear;
         else
             return EndingType.PartialSuccess;
@@ -311,7 +317,10 @@ public class GameManager : MonoBehaviour
         totalEnemyEscaped = 0;
         bossDefeated = false;
 
-        LoadLevel(currentLevelIndex);
+        if (levelIndex == maxLevel)
+            LoadBossLevel();
+        else
+            LoadLevel(levelIndex);
     }
 
     public void GoToMainMenu()
@@ -334,15 +343,11 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Breach Meter: {breachMeter}");
     }
 
-    // ===================== WAVE STATUS =====================
-
     public void OnAllWavesCompleted()
     {
         allWavesCompleted = true;
         Debug.Log($"Level {currentLevelIndex} - Semua wave selesai! Menunggu timer...");
     }
-
-    // ===================== PLAYER =====================
 
     void SpawnPlayer()
     {
@@ -358,8 +363,6 @@ public class GameManager : MonoBehaviour
         GameObject playerObj = Instantiate(playerPrefab, offscreenLeft, Quaternion.identity);
         currentPlayer = playerObj.GetComponent<PlayerController>();
     }
-
-    // ===================== COUNTER =====================
 
     void ResetLevelCounter()
     {
@@ -378,8 +381,6 @@ public class GameManager : MonoBehaviour
         totalEnemyEscaped++;
         levelEnemyEscaped++;
     }
-
-    // ===================== ACCESSOR =====================
 
     public GameState CurrentState => currentState;
     public float GetTimer() => timer;

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4365477390246720144
+--- !u!1 &3493673418316739470
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,38 +8,39 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6846417335718792624}
-  - component: {fileID: -2530968325549356222}
+  - component: {fileID: 463070293714287383}
+  - component: {fileID: 6550424672071430745}
+  - component: {fileID: 8464519953503727927}
   m_Layer: 0
-  m_Name: GameObject (1)
+  m_Name: Boss
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6846417335718792624
+--- !u!4 &463070293714287383
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4365477390246720144}
+  m_GameObject: {fileID: 3493673418316739470}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.5, y: -3.5, z: 0}
+  m_LocalPosition: {x: 3.95, y: 0.16, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &-2530968325549356222
+--- !u!212 &6550424672071430745
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4365477390246720144}
+  m_GameObject: {fileID: 3493673418316739470}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -81,13 +82,51 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -8477243708136854617, guid: 4aec29a7e0e12e54ebb8a332279a14d8, type: 3}
+  m_Sprite: {fileID: -5514515118536850214, guid: 513fb0a7760d6a24f9a3ef8da466905b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.7006458, y: 1.31}
+  m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &8464519953503727927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3493673418316739470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8f53d72035efe543a88673ce8c58418, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossController
+  maxHP: 2000
+  contactDamage: 30
+  moveSpeed: 2
+  floatAmplitude: 1
+  floatFrequency: 1
+  introSpeed: 5
+  battlePosition: {x: 5, y: 0}
+  projectilePrefab: {fileID: 4997369334512646653, guid: bf6ad749fc7eabd45b6d2b9ae489dde6, type: 3}
+  spreadCount: 5
+  spreadAngle: 30
+  spreadDamage: 20
+  spreadSpeed: 8
+  spreadCooldown: 3
+  homingProjectilePrefab: {fileID: 6121649381105425693, guid: 0b2b07b76e2be8d4dbbb181723f9ce46, type: 3}
+  homingCount: 7
+  homingDamage: 10
+  homingSpeed: 3
+  homingTurnSpeed: 2
+  homingCooldown: 5
+  chargeSpeed: 20
+  chargeDamage: 30
+  chargeCooldown: 8
+  chargeWindup: 1
+  explosionEffectPrefab: {fileID: 4365477390246720144, guid: c8803bd399c04a0468fd26cbe6c2378f, type: 3}
+  explosionDuration: 2
+  whiteFlashDuration: 1

@@ -158,14 +158,14 @@ MonoBehaviour:
     m_Flags: 0
   speed: 6
   projectilePrefab: {fileID: 4997369334512646653, guid: 42e5ed5df4f5c2447a6b17e673f836b2, type: 3}
-  bulletDamage: 20
+  bulletDamage: 25
   bulletSpawnOffset: {x: 1, y: 0}
   maxHealth: 100
   regenRate: 5
-  minX: 0
-  maxX: 0
-  minY: 0
-  maxY: 0
+  minX: -7.5
+  maxX: 8
+  minY: -4.6
+  maxY: 4.6
   introSpeed: 5
   outroSpeed: 8
 --- !u!50 &-3359679823575909212

@@ -9,10 +9,10 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
+    path: Assets/Scenes/MainMenu/MainMenu.unity
     guid: 2e8e803509bba1a4981280ecbae83b6d
   - enabled: 1
-    path: Assets/Scenes/OpeningCutscene.unity
+    path: Assets/Scenes/Cutscene/OpeningCutscene.unity
     guid: 857638292057f2d45be0cb673a04c75e
   - enabled: 1
     path: Assets/Scenes/Level/Level1.unity
@@ -24,13 +24,13 @@ EditorBuildSettings:
     path: Assets/Scenes/Level/LevelBoss.unity
     guid: 4788067b0c3c1764f8af9dd6b9efcd92
   - enabled: 1
-    path: Assets/Scenes/End/Ending_GameOver.unity
+    path: Assets/Scenes/Cutscene/Ending_GameOver.unity
     guid: 1f5db83a31865b146b2f781c148d7ebc
   - enabled: 1
-    path: Assets/Scenes/End/Ending_PartialSuccess.unity
+    path: Assets/Scenes/Cutscene/Ending_PartialSuccess.unity
     guid: bfa58062ccea7f247b2d00bc304804f7
   - enabled: 1
-    path: Assets/Scenes/End/Ending_PerfectClear.unity
+    path: Assets/Scenes/Cutscene/Ending_PerfectClear.unity
     guid: 96595b80d73c3584a9f91882acbc2a14
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

@@ -50,6 +50,7 @@ public class BossController : MonoBehaviour
     private float startY;
     private PlayerController player;
     private Rigidbody2D rb;
+    private bool isStarted = false;
 
     // ===================== LIFECYCLE =====================
 
@@ -63,11 +64,13 @@ public class BossController : MonoBehaviour
     {
         currentHP = maxHP;
         startY = battlePosition.y;
-        gameObject.SetActive(false);        // boss tidak aktif sampai dipanggil
+        // Boss tetap aktif di scene tapi idle sampai StartBossFight() dipanggil
     }
 
     void Update()
     {
+        if (!isStarted) return;
+
         if (currentState == BossState.Battle)
             HandleFloating();
     }
@@ -76,7 +79,7 @@ public class BossController : MonoBehaviour
 
     public void StartBossFight()
     {
-        gameObject.SetActive(true);
+        isStarted = true;
         player = FindAnyObjectByType<PlayerController>();
 
         // Spawn dari kanan layar
