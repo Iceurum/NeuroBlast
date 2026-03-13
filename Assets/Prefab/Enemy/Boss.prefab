@@ -119,12 +119,12 @@ MonoBehaviour:
   spreadSpeed: 8
   spreadCooldown: 3
   homingProjectilePrefab: {fileID: 6121649381105425693, guid: 0b2b07b76e2be8d4dbbb181723f9ce46, type: 3}
-  homingCount: 7
+  homingCount: 5
   homingDamage: 10
   homingSpeed: 3
   homingTurnSpeed: 2
   homingCooldown: 5
-  homingDelayBetween: 1
+  homingDelayBetween: 3
   chargeSpeed: 20
   chargeDamage: 30
   chargeCooldown: 8

@@ -17,13 +17,14 @@ public class BossHealthUI : MonoBehaviour
     void Start()
     {
         boss = FindAnyObjectByType<BossController>();
+        Debug.Log("Boss found: " + (boss != null));
 
         if (healthSlider != null)
         {
             healthSlider.minValue = 0;
             healthSlider.maxValue = 2000;
             healthSlider.value = 2000;
-            healthSlider.gameObject.SetActive(false);
+            healthSlider.gameObject.SetActive(true);
         }
     }
 

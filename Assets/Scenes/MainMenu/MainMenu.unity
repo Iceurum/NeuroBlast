@@ -239,9 +239,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   playerPrefab: {fileID: 9204242079428172520, guid: 18e94a7f6a437f14f9bcaf324441f541, type: 3}
-  introDuration: 5
-  stageDuration: 10
-  outroDuration: 5
+  introDuration: 7
+  stageDuration: 170
+  outroDuration: 7
   currentLevelIndex: 1
   lastLevelIndex: 1
   maxLevel: 3

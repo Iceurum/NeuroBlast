@@ -187,24 +187,18 @@ public class BossController : MonoBehaviour
 
     IEnumerator ChargeAttack()
     {
-        // Windup — berhenti sebentar
         yield return new WaitForSeconds(chargeWindup);
 
         if (isDead) yield break;
 
-        // Simpan posisi awal
-        Vector2 startPos = transform.position;
+        // Charge ke kiri selama 0.5 detik
+        float chargeTime = 0.5f;
+        float elapsed = 0f;
 
-        // Charge ke arah kiri (arah player)
-        Vector2 chargeTarget = new Vector2(-15f, transform.position.y);
-
-        while (transform.position.x > chargeTarget.x)
+        while (elapsed < chargeTime)
         {
-            transform.position = Vector2.MoveTowards(
-                transform.position,
-                chargeTarget,
-                chargeSpeed * Time.deltaTime
-            );
+            transform.position += Vector3.left * chargeSpeed * Time.deltaTime;
+            elapsed += Time.deltaTime;
             yield return null;
         }
 

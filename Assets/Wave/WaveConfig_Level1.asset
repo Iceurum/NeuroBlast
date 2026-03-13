@@ -18,40 +18,35 @@ MonoBehaviour:
     enemies:
     - enemyPrefab: {fileID: 7367508184144569144, guid: 41ffd377ffe22bf4087634f97b7dc517, type: 3}
       count: 3
-      delayBetweenSpawns: 1
+      delayBetweenSpawns: 2
       spawnOrigin: 0
       spawnPoint: {fileID: 0}
-    - enemyPrefab: {fileID: 8250062111901124607, guid: 5bcf9171e4d10914da814d7370793915, type: 3}
-      count: 1
-      delayBetweenSpawns: 1
-      spawnOrigin: 0
-      spawnPoint: {fileID: 0}
-    delayBeforeWave: 7
+    delayBeforeWave: 9
     delayAfterWave: 8
   - waveName: Wave 2
     enemies:
     - enemyPrefab: {fileID: 7367508184144569144, guid: 41ffd377ffe22bf4087634f97b7dc517, type: 3}
-      count: 3
-      delayBetweenSpawns: 0.8
+      count: 4
+      delayBetweenSpawns: 1.5
       spawnOrigin: 0
       spawnPoint: {fileID: 0}
     - enemyPrefab: {fileID: 8250062111901124607, guid: 5bcf9171e4d10914da814d7370793915, type: 3}
-      count: 3
-      delayBetweenSpawns: 0.8
+      count: 1
+      delayBetweenSpawns: 2
       spawnOrigin: 0
       spawnPoint: {fileID: 0}
     delayBeforeWave: 5
-    delayAfterWave: 8
+    delayAfterWave: 6
   - waveName: Wave 3
     enemies:
     - enemyPrefab: {fileID: 7367508184144569144, guid: 41ffd377ffe22bf4087634f97b7dc517, type: 3}
       count: 4
-      delayBetweenSpawns: 0.6
+      delayBetweenSpawns: 1.2
       spawnOrigin: 0
       spawnPoint: {fileID: 0}
     - enemyPrefab: {fileID: 8250062111901124607, guid: 5bcf9171e4d10914da814d7370793915, type: 3}
-      count: 4
-      delayBetweenSpawns: 0.6
+      count: 2
+      delayBetweenSpawns: 2
       spawnOrigin: 0
       spawnPoint: {fileID: 0}
     delayBeforeWave: 5
@@ -60,16 +55,73 @@ MonoBehaviour:
     enemies:
     - enemyPrefab: {fileID: 7367508184144569144, guid: 41ffd377ffe22bf4087634f97b7dc517, type: 3}
       count: 5
-      delayBetweenSpawns: 0.5
+      delayBetweenSpawns: 1
       spawnOrigin: 0
       spawnPoint: {fileID: 0}
     delayBeforeWave: 5
     delayAfterWave: 6
   - waveName: Wave 5
     enemies:
+    - enemyPrefab: {fileID: 8250062111901124607, guid: 5bcf9171e4d10914da814d7370793915, type: 3}
+      count: 1
+      delayBetweenSpawns: 2
+      spawnOrigin: 0
+      spawnPoint: {fileID: 0}
     - enemyPrefab: {fileID: 7367508184144569144, guid: 41ffd377ffe22bf4087634f97b7dc517, type: 3}
       count: 6
-      delayBetweenSpawns: 0.4
+      delayBetweenSpawns: 0.8
+      spawnOrigin: 0
+      spawnPoint: {fileID: 0}
+    - enemyPrefab: {fileID: 8250062111901124607, guid: 5bcf9171e4d10914da814d7370793915, type: 3}
+      count: 1
+      delayBetweenSpawns: 2
+      spawnOrigin: 0
+      spawnPoint: {fileID: 0}
+    delayBeforeWave: 4
+    delayAfterWave: 5
+  - waveName: Wave 6
+    enemies:
+    - enemyPrefab: {fileID: 7367508184144569144, guid: 41ffd377ffe22bf4087634f97b7dc517, type: 3}
+      count: 6
+      delayBetweenSpawns: 0.8
+      spawnOrigin: 0
+      spawnPoint: {fileID: 0}
+    - enemyPrefab: {fileID: 7367508184144569144, guid: bb9e152cde4a0fb4097083bda1f80077, type: 3}
+      count: 2
+      delayBetweenSpawns: 2.5
+      spawnOrigin: 0
+      spawnPoint: {fileID: 0}
+    delayBeforeWave: 5
+    delayAfterWave: 6
+  - waveName: Wave 7
+    enemies:
+    - enemyPrefab: {fileID: 7367508184144569144, guid: 41ffd377ffe22bf4087634f97b7dc517, type: 3}
+      count: 3
+      delayBetweenSpawns: 0.8
+      spawnOrigin: 0
+      spawnPoint: {fileID: 0}
+    - enemyPrefab: {fileID: 8250062111901124607, guid: 5bcf9171e4d10914da814d7370793915, type: 3}
+      count: 1
+      delayBetweenSpawns: 2
+      spawnOrigin: 0
+      spawnPoint: {fileID: 0}
+    - enemyPrefab: {fileID: 7367508184144569144, guid: bb9e152cde4a0fb4097083bda1f80077, type: 3}
+      count: 3
+      delayBetweenSpawns: 2
+      spawnOrigin: 0
+      spawnPoint: {fileID: 0}
+    delayBeforeWave: 4
+    delayAfterWave: 5
+  - waveName: Wave 8
+    enemies:
+    - enemyPrefab: {fileID: 7367508184144569144, guid: 41ffd377ffe22bf4087634f97b7dc517, type: 3}
+      count: 4
+      delayBetweenSpawns: 0.7
+      spawnOrigin: 0
+      spawnPoint: {fileID: 0}
+    - enemyPrefab: {fileID: 7367508184144569144, guid: bb9e152cde4a0fb4097083bda1f80077, type: 3}
+      count: 4
+      delayBetweenSpawns: 1.5
       spawnOrigin: 0
       spawnPoint: {fileID: 0}
     delayBeforeWave: 4
