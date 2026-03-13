@@ -293,7 +293,7 @@ public class GameManager : MonoBehaviour
 
     public EndingType GetEndingType()
     {
-        if (breachMeter < 10)
+        if (breachMeter < 50)
             return EndingType.PerfectClear;
         else
             return EndingType.PartialSuccess;

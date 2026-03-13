@@ -103,6 +103,7 @@ public class EndingUI : MonoBehaviour
 
     public void OnMainMenuButton()
     {
+        Debug.Log("MainMenu button diklik!");
         if (GameManager.Instance != null)
             GameManager.Instance.GoToMainMenu();
         else
