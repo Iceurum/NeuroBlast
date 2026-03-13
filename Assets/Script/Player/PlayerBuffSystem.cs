@@ -136,17 +136,17 @@ public class PlayerBuffSystem : MonoBehaviour
     // ===================== SHIELD =====================
 
     void ActivateShield()
+{
+    if (shieldPrefab == null)
     {
-        if (shieldPrefab == null)
-        {
-            Debug.LogWarning("shieldPrefab belum di-assign!");
-            return;
-        }
-
-        // Spawn shield sebagai child player
-        activeShield = Instantiate(shieldPrefab, transform);
-        activeShield.transform.localPosition = Vector3.zero;
+        Debug.LogWarning("shieldPrefab belum di-assign!");
+        return;
     }
+
+    activeShield = Instantiate(shieldPrefab, transform.position, Quaternion.identity);
+    activeShield.transform.SetParent(transform);
+    activeShield.transform.localPosition = Vector3.zero;
+}
 
     // Shield menyerap damage
     public bool AbsorbDamage()

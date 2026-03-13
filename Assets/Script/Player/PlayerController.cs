@@ -116,6 +116,7 @@ public class PlayerController : MonoBehaviour
             Debug.LogError("projectilePrefab KOSONG! Assign di Inspector!");
             return;
         }
+        AudioManager.Instance?.PlayBulletSFX();
 
         Vector2 spawnPos = rb.position + bulletSpawnOffset;
 

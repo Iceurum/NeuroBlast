@@ -251,7 +251,7 @@ MonoBehaviour:
   spreadAngle: 20
   spreadSpeed: 15
   laserBeamPrefab: {fileID: 2176270209145073513, guid: 947ba277f379d52489e5952b665ff616, type: 3}
-  laserOffset: {x: 3, y: 0}
+  laserOffset: {x: 17.8, y: 0}
   shieldPrefab: {fileID: 6933042409707452471, guid: 5008f9b19f431d9489d5148a188d8005, type: 3}
   currentBuff: 0
 --- !u!95 &-5956543715060839076
