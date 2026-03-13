@@ -89,7 +89,7 @@ public class AudioManager : MonoBehaviour
                 break;
             case "Ending_PerfectClear":
             case "Ending_PartialSuccess":
-                StopBGM();
+                PlayBGM(menuBGM);    // ← ganti StopBGM() jadi PlayBGM(menuBGM)
                 break;
         }
     }

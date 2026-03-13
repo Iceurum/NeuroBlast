@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
     public GameObject projectilePrefab;
     public int bulletDamage = 25;
     public Vector2 bulletSpawnOffset = new Vector2(0.5f, 0f);
+    public float fireRate = 0.3f;   
+    private float shootTimer = 0f;
 
     [Header("Health")]
     public int maxHealth = 100;
@@ -52,10 +54,12 @@ public class PlayerController : MonoBehaviour
 
         moveInput = MoveAction.ReadValue<Vector2>();
 
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        shootTimer += Time.deltaTime;
+        if (Keyboard.current.spaceKey.isPressed && shootTimer >= fireRate)
+        {
+            shootTimer = 0f;
             HandleShoot();
-
-        HandleRegen();
+        }
     }
 
     private void FixedUpdate()
